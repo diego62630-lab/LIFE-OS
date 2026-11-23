@@ -1,110 +1,801 @@
 
-:root {
-  --bg: #101923;
-  --surface: #192633;
-  --surface2: #223343;
-  --text: #f4f7fa;
-  --muted: #a5b4c2;
-  --primary: #21bd80;
-  --border: #344657;
-}
-
-[data-theme="light"] {
-  --bg: #f2f5f7;
-  --surface: #ffffff;
-  --surface2: #e8eef2;
-  --text: #17232e;
-  --muted: #657584;
-  --primary: #11875b;
-  --border: #d8e0e6;
-}
-
 * {
+  margin: 0;
+  padding: 0;
   box-sizing: border-box;
 }
 
+:root {
+  --bg: #050B16;
+  --card: #0B1930;
+  --blue: #168BFF;
+  --cyan: #19D5FF;
+  --text: #F4F8FF;
+  --muted: #9BAFC9;
+}
+
 body {
-  margin: 0;
-  font-family: Arial, sans-serif;
   background: var(--bg);
   color: var(--text);
-  transition: background .25s, color .25s;
+  font-family: Arial, sans-serif;
+  min-height: 100vh;
 }
 
 #app {
-  width: 100%;
-  max-width: 650px;
+  max-width: 600px;
   margin: auto;
-  min-height: 100vh;
-  padding-bottom: 30px;
+  padding: 22px 18px 110px;
 }
 
-.header {
-  padding: 28px 22px;
-  background: var(--surface);
-  border-bottom: 1px solid var(--border);
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 28px;
 }
 
-.header h1 {
-  margin: 0;
+.logo {
   font-size: 29px;
+  font-weight: 900;
   letter-spacing: 2px;
-  color: var(--primary);
 }
 
-.header p {
-  color: var(--muted);
-  margin-bottom: 0;
+.logo span {
+  color: var(--blue);
 }
 
-#main-content {
-  padding: 22px;
+.topbar button {
+  background: var(--card);
+  color: var(--cyan);
+  border: 1px solid #174D83;
+  border-radius: 50%;
+  width: 45px;
+  height: 45px;
+  font-size: 23px;
 }
 
-section {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 18px;
-  padding: 20px;
-  margin-bottom: 18px;
+.welcome {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 23px 18px;
+  background: linear-gradient(135deg, #10294B, #071323);
+  border: 1px solid #167FE0;
+  border-radius: 22px;
+  box-shadow: 0 0 22px #087BFF22;
+  margin-bottom: 32px;
 }
 
-h2 {
-  margin-top: 0;
+.bot {
+  font-size: 55px;
+  filter: drop-shadow(0 0 12px #168BFF);
+}
+
+.eyebrow {
+  color: var(--cyan);
+  font-size: 9px;
+  letter-spacing: 1.5px;
+  margin-bottom: 9px;
+}
+
+.welcome h1 {
   font-size: 21px;
+  margin-bottom: 9px;
 }
 
-button {
-  background: var(--primary);
-  color: #071d14;
+.welcome p:not(.eyebrow) {
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+#assistantBtn {
+  margin-top: 16px;
+  padding: 12px 15px;
+  background: linear-gradient(90deg, #087BFF, #04B9F0);
+  color: white;
   border: none;
   border-radius: 12px;
-  padding: 12px 18px;
-  font-size: 15px;
   font-weight: bold;
-  cursor: pointer;
+  font-size: 12px;
 }
 
-button:active {
-  transform: scale(.97);
+main > h2,
+.summary h2 {
+  font-size: 19px;
+  margin-bottom: 17px;
 }
 
-input, textarea, select {
-  width: 100%;
-  padding: 13px;
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  background: var(--surface2);
-  color: var(--text);
+.modules {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 13px;
+}
+
+.module {
+  text-align: left;
+  padding: 19px 15px;
+  min-height: 135px;
+  background: linear-gradient(145deg, #10294A, #091426);
+  border: 1px solid #20578B;
+  border-radius: 18px;
+  color: white;
+  transition: 0.2s;
+}
+
+.module:active {
+  transform: scale(0.96);
+  border-color: var(--cyan);
+}
+
+.module span {
+  display: block;
+  font-size: 29px;
+  color: var(--cyan);
+  margin-bottom: 12px;
+}
+
+.module b {
+  display: block;
   font-size: 16px;
+  margin-bottom: 7px;
 }
 
-@media (max-width: 400px) {
-  .header {
-    padding: 22px 16px;
+.module small {
+  color: var(--muted);
+  font-size: 11px;
+}
+
+.summary {
+  margin-top: 25px;
+  padding: 20px;
+  background: #0B1930;
+  border: 1px solid #1765A5;
+  border-radius: 18px;
+}
+
+.summary p,
+#summaryContent {
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+#summaryContent {
+  margin-top: 12px;
+}
+
+.page-content {
+  margin-top: 22px;
+  padding: 20px;
+  background: #0B1930;
+  border-radius: 18px;
+  border: 1px solid #174D83;
+}
+
+.page-content p {
+  color: var(--muted);
+  margin-top: 10px;
+  font-size: 13px;
+}
+
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  display: flex;
+  justify-content: space-around;
+  padding: 13px 5px 17px;
+  background: #081322;
+  border-top: 1px solid #174D83;
+  z-index: 10;
+}
+
+.bottom-nav button {
+  background: none;
+  border: none;
+  color: #8499B5;
+  font-size: 23px;
+}
+
+.bottom-nav small {
+  display: block;
+  font-size: 10px;
+  margin-top: 5px;
+}
+
+.bottom-nav .active {
+  color: var(--cyan);
+  text-shadow: 0 0 12px var(--blue);
+}
+
+@media (max-width: 360px) {
+  .welcome {
+    padding: 15px 10px;
   }
 
-  #main-content {
-    padding: 16px;
+  .bot {
+    font-size: 42px;
+  }
+
+  .welcome h1 {
+    font-size: 17px;
+  }
+}
+
+/* MODULE BUDGET */
+
+.back-button {
+  background: #10294A;
+  color: #35B5FF;
+  border: 1px solid #168BFF;
+  padding: 12px 18px;
+  border-radius: 12px;
+  margin-bottom: 25px;
+  font-weight: bold;
+}
+
+.budget-card {
+  margin: 22px 0;
+  padding: 25px;
+  border-radius: 20px;
+  background: linear-gradient(135deg, #104B91, #07182D);
+  border: 1px solid #168BFF;
+  box-shadow: 0 0 25px #168BFF22;
+}
+
+.budget-card small,
+.budget-stat small {
+  color: #A8C9F1;
+}
+
+.budget-card h1 {
+  font-size: 32px;
+  margin-top: 12px;
+  color: white;
+}
+
+.budget-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 28px;
+}
+
+.budget-stat {
+  background: #10294A;
+  padding: 18px;
+  border-radius: 16px;
+  border: 1px solid #20578B;
+}
+
+.budget-stat h3 {
+  margin-top: 10px;
+  color: #25C5FF;
+  font-size: 18px;
+}
+
+#budgetForm {
+  display: grid;
+  gap: 12px;
+  margin: 18px 0 30px;
+}
+
+#budgetForm input,
+#budgetForm select {
+  width: 100%;
+  padding: 15px;
+  background: #10213A;
+  border: 1px solid #20578B;
+  border-radius: 12px;
+  color: white;
+  font-size: 14px;
+}
+
+#budgetForm button {
+  padding: 15px;
+  background: linear-gradient(90deg, #087BFF, #04B9F0);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-weight: bold;
+}
+
+#pageContent h3 {
+  margin: 20px 0 12px;
+}
+
+.operation {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 15px 10px;
+  margin-bottom: 9px;
+  background: #10213A;
+  border-radius: 12px;
+  font-size: 13px;
+}
+
+.operation b {
+  color: #25C5FF;
+}
+
+.delete-operation {
+  background: none;
+  border: none;
+  color: #FF657A;
+  font-size: 23px;
+}
+/* MODULE AGENDA */
+.agenda-card {
+  background: linear-gradient(135deg, #10294A, #07182D);
+  border: 1px solid #168BFF;
+  border-radius: 20px;
+  padding: 20px;
+  margin: 22px 0;
+  box-shadow: 0 0 20px #168BFF22;
+}
+
+#agendaForm {
+  display: grid;
+  gap: 14px;
+  margin-top: 18px;
+}
+
+#agendaForm input:not([type="checkbox"]) {
+  width: 100%;
+  padding: 15px;
+  background: #10213A;
+  border: 1px solid #20578B;
+  border-radius: 12px;
+  color: white;
+  font-size: 14px;
+  box-sizing: border-box;
+}
+
+#agendaForm input[type="checkbox"] {
+  accent-color: #168BFF;
+  width: 20px;
+  height: 20px;
+}
+
+#agendaForm label {
+  color: #A8C9F1;
+}
+
+#agendaForm button {
+  padding: 15px;
+  background: linear-gradient(90deg, #087BFF, #04B9F0);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-weight: bold;
+}
+
+.delete-event {
+  background: none;
+  border: none;
+  color: #FF657A;
+  font-size: 25px;
+}
+
+/* TABLEAU DE BORD LIFE OS V2 */
+
+.dashboard {
+  display: grid;
+  gap: 13px;
+  margin-top: 16px;
+}
+
+.dashboard-card {
+  background: linear-gradient(145deg, #10294A, #091426);
+  border: 1px solid #20578B;
+  border-radius: 17px;
+  padding: 17px;
+}
+
+.dashboard-card h3 {
+  color: #19D5FF;
+  font-size: 15px;
+  margin-bottom: 13px;
+}
+
+.dashboard-card p {
+  color: #9BAFC9;
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.dashboard-number {
+  display: block;
+  color: #FFFFFF;
+  font-size: 32px;
+  margin: 8px 0;
+}
+
+.dashboard-line {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 12px;
+  padding: 10px;
+  background: #091426;
+  border-radius: 10px;
+  font-size: 12px;
+}
+
+.dashboard-line span {
+  color: #19D5FF;
+}
+
+.dashboard-line b {
+  color: #FFFFFF;
+}
+
+.dashboard-money {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 11px 0;
+  border-bottom: 1px solid #203955;
+  font-size: 13px;
+}
+
+.dashboard-money span {
+  color: #9BAFC9;
+}
+
+.dashboard-money b {
+  color: #FFFFFF;
+}
+
+.dashboard-balance {
+  border-bottom: none;
+  margin-top: 5px;
+  padding: 14px 10px;
+  background: #0D3140;
+  border-radius: 10px;
+}
+
+.dashboard-balance b {
+  color: #19D5FF;
+  font-size: 17px;
+}
+
+.dashboard-smart {
+  border-color: #168BFF;
+  background: linear-gradient(145deg, #103650, #091426);
+}
+
+/* LIFE OS V2.2 - DESIGN TACHES */
+
+.tasks-container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.tasks-container h2 {
+  color: #19D5FF;
+  margin-bottom: 5px;
+}
+
+.tasks-progress {
+  background: #0B1930;
+  border: 1px solid #168BFF;
+  border-radius: 16px;
+  padding: 16px;
+}
+
+.tasks-progress p {
+  color: #9BAFC9;
+  margin-bottom: 10px;
+}
+
+.tasks-progress-bar {
+  width: 100%;
+  height: 10px;
+  background: #26384D;
+  border-radius: 20px;
+  overflow: hidden;
+  margin-bottom: 10px;
+}
+
+.tasks-progress-bar div {
+  height: 100%;
+  background: linear-gradient(90deg, #168BFF, #19D5FF);
+  border-radius: 20px;
+  transition: width 0.3s;
+}
+
+.tasks-progress strong {
+  color: #19D5FF;
+}
+
+.tasks-form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  background: #0B1930;
+  border: 1px solid #203955;
+  padding: 15px;
+  border-radius: 16px;
+}
+
+.tasks-form input,
+.tasks-form select {
+  width: 100%;
+  padding: 13px;
+  background: #050B16;
+  color: #F4F8FF;
+  border: 1px solid #20578B;
+  border-radius: 10px;
+  font-size: 14px;
+}
+
+.tasks-form button {
+  padding: 14px;
+  background: linear-gradient(90deg, #168BFF, #19D5FF);
+  color: #FFFFFF;
+  border: none;
+  border-radius: 12px;
+  font-weight: bold;
+}
+
+.task-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  background: #0B1930;
+  border: 1px solid #20578B;
+  border-radius: 14px;
+  padding: 14px;
+  margin-top: 12px;
+}
+
+.task-info {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.task-info strong {
+  color: #FFFFFF;
+  overflow-wrap: anywhere;
+}
+
+.task-info p {
+  color: #9BAFC9;
+  font-size: 12px;
+}
+
+.task-priority {
+  font-size: 12px;
+}
+
+.priority-urgent {
+  color: #FF5C70;
+}
+
+.priority-normal {
+  color: #FFB547;
+}
+
+.priority-low {
+  color: #45D6A5;
+}
+
+.task-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.task-actions button {
+  padding: 9px;
+  background: #10294A;
+  color: #19D5FF;
+  border: 1px solid #20578B;
+  border-radius: 9px;
+}
+
+.task-done {
+  opacity: 0.55;
+}
+
+.task-done .task-info strong {
+  text-decoration: line-through;
+}
+
+/* LIFE OS V2.4 - FILTRES FUTURISTES */
+
+.tasks-filter {
+  margin-top: 8px;
+  padding: 17px;
+  background: linear-gradient(145deg, #0B1930, #071323);
+  border: 1px solid #174D83;
+  border-radius: 18px;
+  box-shadow: 0 0 20px #168BFF12;
+}
+
+.tasks-filter h3 {
+  color: #F4F8FF;
+  font-size: 15px;
+  margin: 0 0 15px;
+}
+
+.tasks-filter-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 11px;
+}
+
+.task-filter-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 7px;
+  min-width: 0;
+  padding: 15px 12px;
+  background: linear-gradient(145deg, #10294A, #091426);
+  border: 1px solid #20578B;
+  border-radius: 14px;
+  color: #F4F8FF;
+  text-align: left;
+  cursor: pointer;
+  transition: background 0.2s, border-color 0.2s,
+              box-shadow 0.2s, transform 0.2s;
+}
+
+.task-filter-btn span {
+  font-size: 24px;
+  color: #19D5FF;
+}
+
+.task-filter-btn b {
+  font-size: 14px;
+}
+
+.task-filter-btn small {
+  color: #9BAFC9;
+  font-size: 10px;
+}
+
+.task-filter-btn.selected {
+  background: linear-gradient(135deg, #087BFF, #0755A8);
+  border-color: #35B5FF;
+  box-shadow: 0 0 17px #168BFF55,
+              inset 0 0 12px #FFFFFF12;
+  transform: translateY(-2px);
+}
+
+.task-filter-btn.selected span,
+.task-filter-btn.selected b,
+.task-filter-btn.selected small {
+  color: #FFFFFF;
+}
+
+.task-filter-btn:active {
+  transform: scale(0.96);
+}
+
+.task-filter-btn:focus-visible {
+  outline: 2px solid #19D5FF;
+  outline-offset: 3px;
+}
+
+@media (max-width: 360px) {
+  .tasks-filter-grid {
+    gap: 8px;
+  }
+
+  .task-filter-btn {
+    padding: 12px 9px;
+  }
+
+  .task-filter-btn b {
+    font-size: 12px;
+  }
+}
+
+/* LIFE OS V2.5 - ANIMATIONS FUTURISTES */
+
+/* Apparition progressive des cartes */
+@keyframes lifeOSAppear {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Pulsation lumineuse */
+@keyframes lifeOSGlow {
+  0%, 100% {
+    box-shadow: 0 0 10px #168BFF18;
+  }
+  50% {
+    box-shadow: 0 0 22px #168BFF45;
+  }
+}
+
+/* Animation des tâches */
+.task-card {
+  animation: lifeOSAppear 0.4s ease both;
+  transition: border-color 0.25s, box-shadow 0.25s,
+              transform 0.25s;
+}
+
+.task-card:hover {
+  border-color: #19D5FF;
+  box-shadow: 0 0 17px #168BFF35;
+  transform: translateY(-2px);
+}
+
+/* Animation des filtres */
+.task-filter-btn {
+  position: relative;
+  overflow: hidden;
+}
+
+.task-filter-btn:hover {
+  border-color: #19D5FF;
+  box-shadow: 0 0 18px #168BFF45;
+  transform: translateY(-3px);
+}
+
+.task-filter-btn.selected {
+  animation: lifeOSGlow 2.5s ease-in-out infinite;
+}
+
+/* Effet lumineux sur les boutons */
+.tasks-form button,
+#assistantBtn,
+#budgetForm button,
+#agendaForm button {
+  transition: transform 0.2s, box-shadow 0.25s,
+              filter 0.25s;
+}
+
+.tasks-form button:hover,
+#assistantBtn:hover,
+#budgetForm button:hover,
+#agendaForm button:hover {
+  box-shadow: 0 0 20px #168BFF80;
+  filter: brightness(1.12);
+}
+
+.tasks-form button:active,
+#assistantBtn:active,
+#budgetForm button:active,
+#agendaForm button:active {
+  transform: scale(0.97);
+}
+
+/* Animation des blocs principaux */
+.welcome,
+.summary,
+.page-content,
+.dashboard-card,
+.tasks-progress,
+.tasks-filter {
+  animation: lifeOSAppear 0.5s ease both;
+}
+
+/* Respect des préférences de réduction des animations */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
   }
 }

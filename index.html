@@ -4,31 +4,81 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#101923">
-  <meta name="description" content="LIFE-OS, votre espace personnel de gestion et d'organisation.">
-  <title>LIFE-OS</title>
-  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#050B16">
+  <title>LIFE OS</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
   <div id="app">
-    <header class="header">
-      <h1>LIFE-OS</h1>
-      <p>Votre vie, organisée simplement.</p>
+    <header class="topbar">
+      <div class="logo">LIFE <span>OS</span></div>
+      <button id="notifications">♧</button>
     </header>
 
-    <main id="main-content">
-      <section id="dashboard">
-        <h2>Bienvenue sur LIFE-OS</h2>
-        <p>Votre espace personnel commence ici.</p>
+    <main>
+      <section class="welcome">
+        <div class="bot">🤖</div>
+        <div>
+          <p class="eyebrow">VOTRE ASSISTANT PERSONNEL</p>
+          <h1>Bienvenue sur LIFE OS</h1>
+          <p>Votre vie, plus simple et plus intelligente.</p>
+          <button id="assistantBtn">Parler à mon assistant</button>
+        </div>
+      </section>
+
+      <h2>Votre espace personnel</h2>
+
+      <section class="modules">
+        <button class="module" data-page="agenda">
+          <span>▦</span><b>Agenda</b>
+          <small>Rendez-vous et rappels</small>
+        </button>
+        <button class="module" data-page="budget">
+          <span>€</span><b>Budget</b>
+          <small>Gérez vos finances</small>
+        </button>
+        <button class="module" data-page="courses">
+          <span>🛒</span><b>Courses</b>
+          <small>Comparez les prix</small>
+        </button>
+        <button class="module" data-page="tasks">
+          <span>✓</span><b>Tâches</b>
+          <small>Organisez votre quotidien</small>
+        </button>
+        <button class="module" data-page="documents">
+          <span>▣</span><b>Documents</b>
+          <small>Vos fichiers</small>
+        </button>
+        <button class="module" data-page="activities">
+          <span>☆</span><b>Activités</b>
+          <small>Loisirs et sorties</small>
+        </button>
+      </section>
+
+      <section class="summary">
+        <h2>Mon résumé</h2>
+        <p>Votre quotidien en un coup d'œil.</p>
+        <div id="summaryContent">
+          LIFE OS est prêt à vous accompagner.
+        </div>
+      </section>
+
+      <section id="pageContent" class="page-content">
+        <h2>Bienvenue chez vous</h2>
+        <p>Sélectionnez un module pour commencer.</p>
       </section>
     </main>
+
+    <nav class="bottom-nav">
+      <button class="active" data-page="home">⌂<small>Accueil</small></button>
+      <button data-page="assistant">🤖<small>Assistant</small></button>
+      <button data-page="activities">☆<small>Explorer</small></button>
+      <button data-page="profile">◉<small>Profil</small></button>
+    </nav>
   </div>
 
-  <script src="database.js"></script>
-  <script src="voice.js"></script>
-  <script src="app.js"></script>
 
+<script src="./app.js"></script>
 </body>
 </html>
