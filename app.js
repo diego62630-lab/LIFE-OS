@@ -941,3 +941,66 @@ document.querySelectorAll("[data-task-filter]").forEach(button => {
 });
 }
 
+// ===============================
+// ASSISTANT VOCAL LIFE OS
+// ===============================
+
+
+function parlerLifeOS(message) {
+  const synth = window.speechSynthesis;
+
+  if (!synth) {
+    alert("La synthèse vocale n'est pas disponible dans cet aperçu.");
+    return;
+  }
+
+  const voix = new SpeechSynthesisUtterance(message);
+  voix.lang = "fr-FR";
+  voix.rate = 1;
+  voix.pitch = 1;
+
+  synth.cancel();
+  synth.speak(voix);
+}
+
+function ecouterLifeOS() {
+  const Reconnaissance =
+    window.SpeechRecognition ||
+    window.webkitSpeechRecognition;
+
+  if (!Reconnaissance) {
+    alert("La reconnaissance vocale n'est pas disponible dans ce navigateur.");
+    return;
+  }
+
+  const reconnaissance = new Reconnaissance();
+  reconnaissance.lang = "fr-FR";
+  reconnaissance.continuous = false;
+  reconnaissance.interimResults = false;
+
+  reconnaissance.onresult = function(event) {
+    const commande = event.results[0][0].transcript.toLowerCase();
+
+    parlerLifeOS("Tu as dit : " + commande);
+  };
+
+  reconnaissance.onerror = function() {
+    parlerLifeOS("Je n'ai pas compris. Peux-tu répéter ?");
+  };
+
+  reconnaissance.start();
+}
+
+// CONNEXION DU BOUTON ASSISTANT
+
+document.addEventListener("DOMContentLoaded", () => {
+  const bouton = document.getElementById("assistantBtn");
+
+  if (bouton) {
+    bouton.addEventListener("click", () => {
+      parlerLifeOS("Bonjour ! Je suis ton assistant LIFE OS. Que puis-je faire pour toi ?");
+      ecouterLifeOS();
+    });
+  }
+});
+
