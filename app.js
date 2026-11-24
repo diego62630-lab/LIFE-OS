@@ -1091,7 +1091,9 @@ if (boutonAssistant) {
   "Bonjour ! Je suis ton assistant LIFE OS."
 );
 voix.lang = "fr-FR";
- alert("Synthèse vocale : " + ("speechSynthesis" in window));
+
+window.speechSynthesis.cancel();
+voix.volume = 1;
 window.speechSynthesis.speak(voix);
   });
 }
