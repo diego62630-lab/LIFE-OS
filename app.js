@@ -1117,14 +1117,23 @@ function ecouterLifeOS() {
   micro.interimResults = false;
 
   micro.onresult = function(event) {
-    const commande = event.results[0][0].transcript.toLowerCase();
+    const commande = event.results[0][0].transcript
+  .toLowerCase()
+  .normalize("NFD")
+  .replace(/[\u0300-\u036f]/g, "");
 
-    if (commande.includes("agenda")) {
-      openPage("agenda");
-    } else {
-      alert("J'ai entendu : " + commande);
-    }
-  };
-
-  micro.start();
+    
+if (commande.includes("agenda")) {
+  openPage("agenda");
+} else if (commande.includes("budget")) {
+  openPage("budget");
+} else if (commande.includes("tache")) {
+  openPage("tasks");
+} else if (
+  commande.includes("accueil") ||
+  commande.includes("maison")
+) {
+  openPage("home");
+} else {
+  alert("J'ai entendu : " + commande);
 }
