@@ -1002,3 +1002,73 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 });
 
+// ===============================
+// ASSISTANT VOCAL LIFE OS
+// ===============================
+
+function parlerLifeOS(message, apresParole) {
+  if (!window.speechSynthesis) {
+    alert("Synthèse vocale indisponible.");
+    return;
+  }
+
+  window.speechSynthesis.cancel();
+
+  const voix = new SpeechSynthesisUtterance(message);
+  voix.lang = "fr-FR";
+  voix.rate = 1;
+  voix.pitch = 1;
+
+  voix.onend = () => {
+    if (typeof apresParole === "function") {
+      apresParole();
+    }
+  };
+
+  window.speechSynthesis.speak(voix);
+}
+
+function ecouterLifeOS() {
+  const Reconnaissance =
+    window.SpeechRecognition ||
+    window.webkitSpeechRecognition;
+
+  if (!Reconnaissance) {
+    alert("Reconnaissance vocale indisponible dans ce navigateur.");
+    return;
+  }
+
+  const reconnaissance = new Reconnaissance();
+
+  reconnaissance.lang = "fr-FR";
+  reconnaissance.continuous = false;
+  reconnaissance.interimResults = false;
+
+  reconnaissance.onresult = function(event) {
+    const commande = event.results[0][0].transcript.toLowerCase();
+    parlerLifeOS("Tu as dit : " + commande);
+  };
+
+  reconnaissance.onerror = function() {
+    parlerLifeOS("Je n'ai pas réussi à comprendre. Réessayons.");
+  };
+
+  try {
+    reconnaissance.start();
+  } catch (error) {
+    alert("Impossible de démarrer le microphone.");
+  }
+}
+
+// Connexion du bouton
+const assistantBtn = document.getElementById("assistantBtn");
+
+if (assistantBtn) {
+  assistantBtn.addEventListener("click", () => {
+    parlerLifeOS(
+      "Bonjour ! Je suis ton assistant LIFE OS. Je t'écoute.",
+      ecouterLifeOS
+    );
+  });
+}
+
