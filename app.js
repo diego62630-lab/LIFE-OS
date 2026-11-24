@@ -946,22 +946,20 @@ document.querySelectorAll("[data-task-filter]").forEach(button => {
 // ===============================
 
 
-function parlerLifeOS(message) {
-  const synth = window.speechSynthesis;
 
-  if (!synth) {
-    alert("La synthèse vocale n'est pas disponible dans cet aperçu.");
-    return;
+document.addEventListener("DOMContentLoaded", () => {
+  const bouton = document.getElementById("assistantBtn");
+
+  if (bouton) {
+    bouton.addEventListener("click", () => {
+      parlerLifeOS(
+        "Bonjour ! Je suis ton assistant LIFE OS. Je t'écoute.",
+        ecouterLifeOS
+      );
+    });
   }
+});
 
-  const voix = new SpeechSynthesisUtterance(message);
-  voix.lang = "fr-FR";
-  voix.rate = 1;
-  voix.pitch = 1;
-
-  synth.cancel();
-  synth.speak(voix);
-}
 
 function ecouterLifeOS() {
   const Reconnaissance =
