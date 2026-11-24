@@ -1095,5 +1095,36 @@ voix.lang = "fr-FR";
 window.speechSynthesis.cancel();
 voix.volume = 1;
 window.speechSynthesis.speak(voix);
+    voix.onend = function() {
+  setTimeout(ecouterLifeOS, 700);
+};
   });
+}
+
+function ecouterLifeOS() {
+  const Reconnaissance =
+    window.SpeechRecognition ||
+    window.webkitSpeechRecognition;
+
+  if (!Reconnaissance) {
+    alert("La reconnaissance vocale n'est pas disponible.");
+    return;
+  }
+
+  const micro = new Reconnaissance();
+  micro.lang = "fr-FR";
+  micro.continuous = false;
+  micro.interimResults = false;
+
+  micro.onresult = function(event) {
+    const commande = event.results[0][0].transcript.toLowerCase();
+
+    if (commande.includes("agenda")) {
+      openPage("agenda");
+    } else {
+      alert("J'ai entendu : " + commande);
+    }
+  };
+
+  micro.start();
 }
