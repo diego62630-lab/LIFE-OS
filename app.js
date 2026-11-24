@@ -1131,9 +1131,11 @@ if (commande.includes("agenda")) {
   openPage("tasks");
   } else if (
   commande.includes("course") ||
-  commande.includes("courses")
+  commande.includes("courses") ||
+  commande.includes("mes course")
 ) {
   openPage("courses");
+  parlerLifeOS("J'ouvre tes courses.");
 } else if (
   commande.includes("accueil") ||
   commande.includes("maison")
