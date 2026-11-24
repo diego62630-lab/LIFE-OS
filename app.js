@@ -1137,3 +1137,7 @@ if (commande.includes("agenda")) {
 } else {
   alert("J'ai entendu : " + commande);
 }
+      };
+
+  micro.start();
+}
