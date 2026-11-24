@@ -1003,148 +1003,199 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 
-/* ===============================
-   ASSISTANT VOCAL LIFE OS
-================================ */
 
-let reconnaissanceLifeOS = null;
+/* =================================
+   LIFE OS - ASSISTANT VOCAL LIFE
+================================= */
 
+let lifeModeActif = false;
+let lifeAttendCommande = false;
+let lifeParle = false;
+let lifeDemarre = false;
+let lifeReconnaissance = null;
 
-function ecouterLifeOS() {
-  const Reconnaissance =
-    window.SpeechRecognition ||
-    window.webkitSpeechRecognition;
+function lifeNormaliser(texte) {
+  return texte.toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "");
+}
 
-  if (!Reconnaissance) {
-    parlerLifeOS("La reconnaissance vocale est indisponible.");
+function lifeDire(message, apresParole) {
+  if (!("speechSynthesis" in window)) {
+    alert("La voix est indisponible.");
     return;
   }
 
-  reconnaissanceLifeOS = new Reconnaissance();
-  reconnaissanceLifeOS.lang = "fr-FR";
-  reconnaissanceLifeOS.continuous = false;
-  reconnaissanceLifeOS.interimResults = false;
+  lifeParle = true;
 
-  reconnaissanceLifeOS.onresult = function(event) {
-    const commande = event.results[0][0].transcript
-      .toLowerCase()
-      .normalize("NFD")
-      .replace(/[\u0300-\u036f]/g, "");
+  if (lifeReconnaissance) {
+    try {
+      lifeReconnaissance.stop();
+    } catch (error) {}
+  }
 
-    if (commande.includes("agenda")) {
-      openPage("agenda");
-      parlerLifeOS("J'ouvre ton agenda.");
-    } else if (commande.includes("budget")) {
-      openPage("budget");
-      parlerLifeOS("J'ouvre ton budget.");
-    } else if (
-      commande.includes("tache") ||
-      commande.includes("taches")
-    ) {
-      openPage("tasks");
-      parlerLifeOS("J'affiche tes tâches.");
-    } else if (
-      commande.includes("accueil") ||
-      commande.includes("maison")
-    ) {
-      openPage("home");
-      parlerLifeOS("Retour à l'accueil.");
-    } else if (commande.includes("date")) {
-      const aujourdHui = new Date().toLocaleDateString("fr-FR", {
-        weekday: "long",
-        day: "numeric",
-        month: "long",
-        year: "numeric"
-      });
-      parlerLifeOS("Aujourd'hui, nous sommes le " + aujourdHui);
+  window.speechSynthesis.cancel();
+
+  const voix = new SpeechSynthesisUtterance(message);
+  voix.lang = "fr-FR";
+  voix.volume = 1;
+
+  voix.onend = function() {
+    lifeParle = false;
+
+    if (apresParole) {
+      apresParole();
     } else {
-      parlerLifeOS("Je n'ai pas compris ta commande. Réessaie.");
+      lifeDemarrerEcoute();
     }
   };
 
-  reconnaissanceLifeOS.onerror = function() {
-    parlerLifeOS("Je n'ai pas réussi à comprendre.");
-  };
+  window.speechSynthesis.speak(voix);
+}
 
-  try {
-    reconnaissanceLifeOS.start();
-  } catch (error) {
-    parlerLifeOS("Le microphone n'a pas pu démarrer.");
+function lifeExecuter(commande) {
+  lifeAttendCommande = false;
+
+  if (commande.includes("agenda")) {
+    openPage("agenda");
+    lifeDire("J'ouvre ton agenda.");
+
+  } else if (commande.includes("budget")) {
+    openPage("budget");
+    lifeDire("J'ouvre ton budget.");
+
+  } else if (commande.includes("tache")) {
+    openPage("tasks");
+    lifeDire("J'affiche tes tâches.");
+
+  } else if (commande.includes("course")) {
+    openPage("courses");
+    lifeDire("J'ouvre tes courses.");
+
+  } else if (
+    commande.includes("accueil") ||
+    commande.includes("maison")
+  ) {
+    openPage("home");
+    lifeDire("Retour à l'accueil.");
+
+  } else if (commande.includes("date")) {
+    const date = new Date().toLocaleDateString("fr-FR", {
+      weekday: "long",
+      day: "numeric",
+      month: "long",
+      year: "numeric"
+    });
+
+    lifeDire("Aujourd'hui, nous sommes le " + date);
+
+  } else {
+    lifeDire("Je n'ai pas compris. Réessaie.");
   }
 }
 
-const assistantBtn = document.getElementById("assistantBtn");
+function lifeDemarrerEcoute() {
+  if (!lifeModeActif || lifeParle || lifeDemarre) {
+    return;
+  }
 
-if (assistantBtn) {
-  assistantBtn.addEventListener("click", () => {
-    parlerLifeOS(
-      "Bonjour ! Je suis ton assistant LIFE OS. Dis-moi ce que tu souhaites ouvrir.",
-      ecouterLifeOS
-    );
-  });
-}
-const boutonAssistant = document.getElementById("assistantBtn");
-
-if (boutonAssistant) {
-  boutonAssistant.addEventListener("click", function() {
-    const voix = new SpeechSynthesisUtterance(
-  "Bonjour ! Je suis ton assistant LIFE OS."
-);
-voix.lang = "fr-FR";
-
-window.speechSynthesis.cancel();
-voix.volume = 1;
-window.speechSynthesis.speak(voix);
-    voix.onend = function() {
-  setTimeout(ecouterLifeOS, 700);
-};
-  });
-}
-
-function ecouterLifeOS() {
   const Reconnaissance =
     window.SpeechRecognition ||
     window.webkitSpeechRecognition;
 
   if (!Reconnaissance) {
-    alert("La reconnaissance vocale n'est pas disponible.");
+    lifeModeActif = false;
+    alert("La reconnaissance vocale est indisponible.");
     return;
   }
 
   const micro = new Reconnaissance();
+  lifeReconnaissance = micro;
+
   micro.lang = "fr-FR";
   micro.continuous = false;
   micro.interimResults = false;
 
   micro.onresult = function(event) {
-    const commande = event.results[0][0].transcript
-  .toLowerCase()
-  .normalize("NFD")
-  .replace(/[\u0300-\u036f]/g, "");
+    const phrase = lifeNormaliser(
+      event.results[0][0].transcript
+    );
 
-    
-if (commande.includes("agenda")) {
-  openPage("agenda");
-} else if (commande.includes("budget")) {
-  openPage("budget");
-} else if (commande.includes("tache")) {
-  openPage("tasks");
-  } else if (
-  commande.includes("course") ||
-  commande.includes("courses") ||
-  commande.includes("mes course")
-) {
-  openPage("courses");
-  parlerLifeOS("J'ouvre tes courses.");
-} else if (
-  commande.includes("accueil") ||
-  commande.includes("maison")
-) {
-  openPage("home");
-} else {
-  alert("J'ai entendu : " + commande);
+    if (lifeAttendCommande) {
+      lifeExecuter(phrase);
+      return;
+    }
+
+    const position = phrase.indexOf("life");
+
+    if (position !== -1) {
+      const suite = phrase.slice(position + 4).trim();
+
+      if (suite.length > 0) {
+        lifeExecuter(suite);
+      } else {
+        lifeAttendCommande = true;
+        lifeDire("Oui, je t'écoute.");
+      }
+    }
+  };
+
+  micro.onerror = function(event) {
+    if (
+      event.error === "not-allowed" ||
+      event.error === "service-not-allowed"
+    ) {
+      lifeModeActif = false;
+      alert("Autorise le microphone dans Chrome.");
+    }
+  };
+
+  micro.onend = function() {
+    lifeDemarre = false;
+
+    if (lifeReconnaissance === micro) {
+      lifeReconnaissance = null;
+    }
+
+    if (lifeModeActif && !lifeParle) {
+      setTimeout(lifeDemarrerEcoute, 800);
+    }
+  };
+
+  try {
+    lifeDemarre = true;
+    micro.start();
+  } catch (error) {
+    lifeDemarre = false;
+  }
 }
-      };
 
-  micro.start();
+// BOUTON ACTIVER / DÉSACTIVER
+const boutonLife = document.getElementById("assistantBtn");
+
+if (boutonLife) {
+  boutonLife.addEventListener("click", function() {
+
+    if (lifeModeActif) {
+      lifeModeActif = false;
+      lifeAttendCommande = false;
+
+      if (lifeReconnaissance) {
+        try {
+          lifeReconnaissance.stop();
+        } catch (error) {}
+      }
+
+      window.speechSynthesis.cancel();
+      lifeParle = false;
+
+      alert("Mode Life désactivé.");
+      return;
+    }
+
+    lifeModeActif = true;
+    lifeDire(
+      "Mode Life activé. Dis simplement Life pour me parler."
+    );
+  });
 }
