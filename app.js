@@ -1087,6 +1087,10 @@ const boutonAssistant = document.getElementById("assistantBtn");
 
 if (boutonAssistant) {
   boutonAssistant.addEventListener("click", function() {
-    alert("Bonjour ! Je suis ton assistant LIFE OS.");
+    const voix = new SpeechSynthesisUtterance(
+  "Bonjour ! Je suis ton assistant LIFE OS."
+);
+voix.lang = "fr-FR";
+window.speechSynthesis.speak(voix);
   });
 }
