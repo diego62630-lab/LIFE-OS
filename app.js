@@ -1185,10 +1185,38 @@ function lifeDire(message, apresParole) {
   window.speechSynthesis.speak(voix);
 }
 
+
 function lifeExecuter(commande) {
   lifeAttendCommande = false;
 
-  if (commande.includes("agenda")) {
+  const ajoutCourse = commande.match(
+    /^(?:ajoute|ajouter|mets|met)\s+(.+?)\s+(?:a|dans)\s+(?:mes\s+)?courses?$/
+  );
+
+  if (ajoutCourse) {
+    let nom = ajoutCourse[1].trim();
+
+    nom = nom.replace(/^(des|du|de la|de l'|de|un|une)\s+/, "");
+
+    if (!nom) {
+      lifeDire("Quel article veux-tu ajouter ?");
+      return;
+    }
+
+    const courses = JSON.parse(
+      localStorage.getItem("lifeCourses") || "[]"
+    );
+
+    courses.push({
+      name: nom,
+      done: false
+    });
+
+    localStorage.setItem("lifeCourses", JSON.stringify(courses));
+
+    lifeDire(nom + " ajouté à ta liste de courses.");
+    
+  } else if (commande.includes("agenda")) {
     openPage("agenda");
     lifeDire("J'ouvre ton agenda.");
 
@@ -1225,6 +1253,7 @@ function lifeExecuter(commande) {
     lifeDire("Je n'ai pas compris. Réessaie.");
   }
 }
+
 
 function lifeDemarrerEcoute() {
   if (!lifeModeActif || lifeParle || lifeDemarre) {
