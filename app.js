@@ -1193,7 +1193,13 @@ function lifeExecuter(commande) {
   const courses = JSON.parse(
     localStorage.getItem("lifeCourses") || "[]"
   );
-
+  const nettoyerArticle = texte => {
+    return texte
+      .replace(/\b(les|le|la|des|du|de|un|une|comme|achete|achetes|achetee|achetees)\b/g, "")
+      .trim()
+      .replace(/\s+/g, " ")
+      .replace(/s$/, "");
+  };
   // AJOUTER UN ARTICLE
   const ajoutCourse = commande.match(
     /^(?:ajoute|ajouter|mets|met)\s+(.+?)\s+(?:a|dans)\s+(?:mes\s+)?courses?$/
@@ -1218,10 +1224,12 @@ function lifeExecuter(commande) {
     commande.includes("enlève") ||
     commande.includes("retire")
   ) {
-    const nom = commande
-      .replace(/^(?:supprime|enlève|retire)\s+/, "")
-      .replace(/\s+(?:de\s+)?(?:mes\s+)?courses?$/, "")
-      .trim();
+    const nom = nettoyerArticle(
+  commande
+    .replace(/^(?:coche|marque)\s+/, "")
+    .replace(/\s+(?:comme\s+)?achete(?:e)?s?$/, "")
+    .replace(/\s+(?:dans\s+)?(?:mes\s+)?courses?$/, "")
+);
 
     const index = courses.findIndex(article =>
       article.name.toLowerCase() === nom
@@ -1242,16 +1250,14 @@ function lifeExecuter(commande) {
     commande.includes("achetes") ||
     commande.includes("marque")
   ) {
-    const nom = commande
-      .replace(/^(?:coche|marque)\s+/, "")
-      .replace(/^(.+?)\s+comme\s+acheté(?:e)?$/, "$1")
-      .replace(/^(.+?)\s+acheté(?:e)?$/, "$1")
-      .replace(/\s+(?:dans\s+)?(?:mes\s+)?courses?$/, "")
-      .trim();
+    const nom = nettoyerArticle(
+  commande.replace(/^(?:supprime|enleve|retire)\s+/, "")
+    .replace(/\s+(?:de\s+)?(?:mes\s+)?courses?$/, "")
+);
 
     const article = courses.find(item =>
-      item.name.toLowerCase() === nom
-    );
+  nettoyerArticle(lifeNormaliser(item.name)) === nom
+);
 
     if (!article) {
       lifeDire("Je ne trouve pas cet article dans tes courses.");
