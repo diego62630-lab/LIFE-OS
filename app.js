@@ -1246,7 +1246,7 @@ function lifeExecuter(commande) {
   // COCHER UN ARTICLE COMME ACHETÉ
   } else if (
     commande.includes("coche") ||
-    commande.includes("acheté") ||
+    commande.includes("achete") ||
     commande.includes("achetes") ||
     commande.includes("marque")
   ) {
