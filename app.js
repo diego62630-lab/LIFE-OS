@@ -1002,9 +1002,12 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 });
 
-// ===============================
-// ASSISTANT VOCAL LIFE OS
-// ===============================
+
+/* ===============================
+   ASSISTANT VOCAL LIFE OS
+================================ */
+
+let reconnaissanceLifeOS = null;
 
 function parlerLifeOS(message, apresParole) {
   if (!window.speechSynthesis) {
@@ -1034,41 +1037,70 @@ function ecouterLifeOS() {
     window.webkitSpeechRecognition;
 
   if (!Reconnaissance) {
-    alert("Reconnaissance vocale indisponible dans ce navigateur.");
+    parlerLifeOS("La reconnaissance vocale est indisponible.");
     return;
   }
 
-  const reconnaissance = new Reconnaissance();
+  reconnaissanceLifeOS = new Reconnaissance();
+  reconnaissanceLifeOS.lang = "fr-FR";
+  reconnaissanceLifeOS.continuous = false;
+  reconnaissanceLifeOS.interimResults = false;
 
-  reconnaissance.lang = "fr-FR";
-  reconnaissance.continuous = false;
-  reconnaissance.interimResults = false;
+  reconnaissanceLifeOS.onresult = function(event) {
+    const commande = event.results[0][0].transcript
+      .toLowerCase()
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "");
 
-  reconnaissance.onresult = function(event) {
-    const commande = event.results[0][0].transcript.toLowerCase();
-    parlerLifeOS("Tu as dit : " + commande);
+    if (commande.includes("agenda")) {
+      openPage("agenda");
+      parlerLifeOS("J'ouvre ton agenda.");
+    } else if (commande.includes("budget")) {
+      openPage("budget");
+      parlerLifeOS("J'ouvre ton budget.");
+    } else if (
+      commande.includes("tache") ||
+      commande.includes("taches")
+    ) {
+      openPage("tasks");
+      parlerLifeOS("J'affiche tes tâches.");
+    } else if (
+      commande.includes("accueil") ||
+      commande.includes("maison")
+    ) {
+      openPage("home");
+      parlerLifeOS("Retour à l'accueil.");
+    } else if (commande.includes("date")) {
+      const aujourdHui = new Date().toLocaleDateString("fr-FR", {
+        weekday: "long",
+        day: "numeric",
+        month: "long",
+        year: "numeric"
+      });
+      parlerLifeOS("Aujourd'hui, nous sommes le " + aujourdHui);
+    } else {
+      parlerLifeOS("Je n'ai pas compris ta commande. Réessaie.");
+    }
   };
 
-  reconnaissance.onerror = function() {
-    parlerLifeOS("Je n'ai pas réussi à comprendre. Réessayons.");
+  reconnaissanceLifeOS.onerror = function() {
+    parlerLifeOS("Je n'ai pas réussi à comprendre.");
   };
 
   try {
-    reconnaissance.start();
+    reconnaissanceLifeOS.start();
   } catch (error) {
-    alert("Impossible de démarrer le microphone.");
+    parlerLifeOS("Le microphone n'a pas pu démarrer.");
   }
 }
 
-// Connexion du bouton
 const assistantBtn = document.getElementById("assistantBtn");
 
 if (assistantBtn) {
   assistantBtn.addEventListener("click", () => {
     parlerLifeOS(
-      "Bonjour ! Je suis ton assistant LIFE OS. Je t'écoute.",
+      "Bonjour ! Je suis ton assistant LIFE OS. Dis-moi ce que tu souhaites ouvrir.",
       ecouterLifeOS
     );
   });
 }
-
