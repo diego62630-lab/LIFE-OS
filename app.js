@@ -1009,10 +1009,19 @@ document.addEventListener("DOMContentLoaded", () => {
 
 let reconnaissanceLifeOS = null;
 
+
 function parlerLifeOS(message, apresParole) {
   if (!window.speechSynthesis) {
     alert("Synthèse vocale indisponible.");
     return;
+  }
+
+  // Arrêter toute écoute en cours
+  if (reconnaissanceLifeOS) {
+    try {
+      reconnaissanceLifeOS.abort();
+    } catch (error) {}
+    reconnaissanceLifeOS = null;
   }
 
   window.speechSynthesis.cancel();
@@ -1023,8 +1032,9 @@ function parlerLifeOS(message, apresParole) {
   voix.pitch = 1;
 
   voix.onend = () => {
+    // Attendre un petit instant avant d'activer le micro
     if (typeof apresParole === "function") {
-      apresParole();
+      setTimeout(apresParole, 700);
     }
   };
 
