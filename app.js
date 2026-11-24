@@ -1186,16 +1186,21 @@ function lifeDire(message, apresParole) {
 }
 
 
+
 function lifeExecuter(commande) {
   lifeAttendCommande = false;
 
+  const courses = JSON.parse(
+    localStorage.getItem("lifeCourses") || "[]"
+  );
+
+  // AJOUTER UN ARTICLE
   const ajoutCourse = commande.match(
     /^(?:ajoute|ajouter|mets|met)\s+(.+?)\s+(?:a|dans)\s+(?:mes\s+)?courses?$/
   );
 
   if (ajoutCourse) {
     let nom = ajoutCourse[1].trim();
-
     nom = nom.replace(/^(des|du|de la|de l'|de|un|une)\s+/, "");
 
     if (!nom) {
@@ -1203,19 +1208,59 @@ function lifeExecuter(commande) {
       return;
     }
 
-    const courses = JSON.parse(
-      localStorage.getItem("lifeCourses") || "[]"
+    courses.push({ name: nom, done: false });
+    localStorage.setItem("lifeCourses", JSON.stringify(courses));
+    lifeDire(nom + " ajouté à ta liste de courses.");
+
+  // SUPPRIMER UN ARTICLE
+  } else if (
+    commande.includes("supprime") ||
+    commande.includes("enlève") ||
+    commande.includes("retire")
+  ) {
+    const nom = commande
+      .replace(/^(?:supprime|enlève|retire)\s+/, "")
+      .replace(/\s+(?:de\s+)?(?:mes\s+)?courses?$/, "")
+      .trim();
+
+    const index = courses.findIndex(article =>
+      article.name.toLowerCase() === nom
     );
 
-    courses.push({
-      name: nom,
-      done: false
-    });
+    if (index === -1) {
+      lifeDire("Je ne trouve pas cet article dans tes courses.");
+    } else {
+      const article = courses.splice(index, 1)[0];
+      localStorage.setItem("lifeCourses", JSON.stringify(courses));
+      lifeDire(article.name + " supprimé de tes courses.");
+    }
 
-    localStorage.setItem("lifeCourses", JSON.stringify(courses));
+  // COCHER UN ARTICLE COMME ACHETÉ
+  } else if (
+    commande.includes("coche") ||
+    commande.includes("acheté") ||
+    commande.includes("achetes") ||
+    commande.includes("marque")
+  ) {
+    const nom = commande
+      .replace(/^(?:coche|marque)\s+/, "")
+      .replace(/^(.+?)\s+comme\s+acheté(?:e)?$/, "$1")
+      .replace(/^(.+?)\s+acheté(?:e)?$/, "$1")
+      .replace(/\s+(?:dans\s+)?(?:mes\s+)?courses?$/, "")
+      .trim();
 
-    lifeDire(nom + " ajouté à ta liste de courses.");
-    
+    const article = courses.find(item =>
+      item.name.toLowerCase() === nom
+    );
+
+    if (!article) {
+      lifeDire("Je ne trouve pas cet article dans tes courses.");
+    } else {
+      article.done = true;
+      localStorage.setItem("lifeCourses", JSON.stringify(courses));
+      lifeDire(article.name + " coché comme acheté.");
+    }
+
   } else if (commande.includes("agenda")) {
     openPage("agenda");
     lifeDire("J'ouvre ton agenda.");
@@ -1253,6 +1298,7 @@ function lifeExecuter(commande) {
     lifeDire("Je n'ai pas compris. Réessaie.");
   }
 }
+
 
 
 function lifeDemarrerEcoute() {
