@@ -1129,6 +1129,11 @@ if (commande.includes("agenda")) {
   openPage("budget");
 } else if (commande.includes("tache")) {
   openPage("tasks");
+  } else if (
+  commande.includes("course") ||
+  commande.includes("courses")
+) {
+  openPage("courses");
 } else if (
   commande.includes("accueil") ||
   commande.includes("maison")
