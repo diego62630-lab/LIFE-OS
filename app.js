@@ -1193,13 +1193,15 @@ function lifeExecuter(commande) {
   const courses = JSON.parse(
     localStorage.getItem("lifeCourses") || "[]"
   );
-  const nettoyerArticle = texte => {
-    return texte
-      .replace(/\b(les|le|la|des|du|de|un|une|comme|achete|achetes|achetee|achetees)\b/g, "")
-      .trim()
-      .replace(/\s+/g, " ")
-      .replace(/s$/, "");
-  };
+  
+const nettoyerArticle = texte => {
+  return lifeNormaliser(texte)
+    .replace(/\b(les|le|la|des|du|de|un|une|comme|achete|achetes|achetee|achetees|dans|mes)\b/g, "")
+    .trim()
+    .replace(/\s+/g, " ")
+    .replace(/s$/, "");
+};
+
   // AJOUTER UN ARTICLE
   const ajoutCourse = commande.match(
     /^(?:ajoute|ajouter|mets|met)\s+(.+?)\s+(?:a|dans)\s+(?:mes\s+)?courses?$/
@@ -1251,8 +1253,10 @@ function lifeExecuter(commande) {
     commande.includes("marque")
   ) {
     const nom = nettoyerArticle(
-  commande.replace(/^(?:supprime|enleve|retire)\s+/, "")
-    .replace(/\s+(?:de\s+)?(?:mes\s+)?courses?$/, "")
+  commande
+    .replace(/^(?:coche|marque)\s+/, "")
+    .replace(/\s+(?:comme\s+)?achete(?:e)?s?$/, "")
+    .replace(/\s+(?:dans\s+)?(?:mes\s+)?courses?$/, "")
 );
 
     const article = courses.find(item =>
