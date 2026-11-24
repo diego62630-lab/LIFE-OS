@@ -401,6 +401,92 @@ function updateHomeDashboard() {
   }
 }
 
+function showCourses() {
+  let courses = JSON.parse(
+    localStorage.getItem("lifeCourses") || "[]"
+  );
+
+  function sauvegarder() {
+    localStorage.setItem("lifeCourses", JSON.stringify(courses));
+  }
+
+  pageContent.innerHTML = `
+    <div class="tasks-container">
+      <h2>🛒 Mes courses</h2>
+
+      <div class="tasks-form">
+        <input id="courseName" type="text"
+          placeholder="Nom de l'article...">
+        <button id="addCourseBtn">➕ Ajouter</button>
+      </div>
+
+      <div id="coursesList"></div>
+    </div>
+  `;
+
+  function afficherCourses() {
+    const liste = document.getElementById("coursesList");
+
+    if (courses.length === 0) {
+      liste.innerHTML = "<p>Ta liste est vide.</p>";
+      return;
+    }
+
+    liste.innerHTML = courses.map((article, index) => `
+      <div class="task-card ${article.done ? "task-done" : ""}">
+        <label>
+          <input type="checkbox"
+            data-course-check="${index}"
+            ${article.done ? "checked" : ""}>
+          <strong>${escapeHTML(article.name)}</strong>
+        </label>
+
+        <button data-course-delete="${index}">🗑️</button>
+      </div>
+    `).join("");
+
+    liste.querySelectorAll("[data-course-check]").forEach(btn => {
+      btn.onchange = () => {
+        courses[Number(btn.dataset.courseCheck)].done = btn.checked;
+        sauvegarder();
+        afficherCourses();
+      };
+    });
+
+    liste.querySelectorAll("[data-course-delete]").forEach(btn => {
+      btn.onclick = () => {
+        courses.splice(Number(btn.dataset.courseDelete), 1);
+        sauvegarder();
+        afficherCourses();
+      };
+    });
+  }
+
+  document.getElementById("addCourseBtn").onclick = () => {
+    const champ = document.getElementById("courseName");
+    const nom = champ.value.trim();
+
+    if (!nom) {
+      alert("Écris le nom d'un article.");
+      return;
+    }
+
+    courses.push({ name: nom, done: false });
+    sauvegarder();
+    champ.value = "";
+    afficherCourses();
+    champ.focus();
+  };
+
+  document.getElementById("courseName").addEventListener("keydown", event => {
+    if (event.key === "Enter") {
+      document.getElementById("addCourseBtn").click();
+    }
+  });
+
+  afficherCourses();
+}
+
 function openPage(name) {
   if (!pages[name]) return;
 
@@ -417,12 +503,14 @@ function openPage(name) {
     name === "home" ? "block" : "none";
 
   if (name === "budget") {
-    showBudget();
-  } else if (name === "agenda") {
-    showAgenda();
-  } else if (name === "tasks") {
-    showTasks();
-  } else {
+  showBudget();
+} else if (name === "agenda") {
+  showAgenda();
+} else if (name === "tasks") {
+  showTasks();
+} else if (name === "courses") {
+  showCourses();
+} else {
     pageContent.innerHTML = `
       <h2>${pages[name][0]}</h2>
       <p>${pages[name][1]}</p>
