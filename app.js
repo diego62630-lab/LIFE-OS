@@ -425,44 +425,62 @@ function showCourses() {
   `;
 
   function afficherCourses() {
-    const liste = document.getElementById("coursesList");
+  const liste = document.getElementById("coursesList");
 
-    if (courses.length === 0) {
-      liste.innerHTML = "<p>Ta liste est vide.</p>";
-      return;
-    }
-
-    liste.innerHTML = courses.map((article, index) => `
-      <div class="task-card ${article.done ? "task-done" : ""}">
-        <label>
-          <input type="checkbox"
-            data-course-check="${index}"
-            ${article.done ? "checked" : ""}>
-          <strong>${escapeHTML(article.name)}</strong>
-        </label>
-
-        <button data-course-delete="${index}">🗑️</button>
-      </div>
-    `).join("");
-
-    liste.querySelectorAll("[data-course-check]").forEach(btn => {
-      btn.onchange = () => {
-        courses[Number(btn.dataset.courseCheck)].done = btn.checked;
-        sauvegarder();
-        afficherCourses();
-      };
-    });
-
-    liste.querySelectorAll("[data-course-delete]").forEach(btn => {
-      btn.onclick = () => {
-        courses.splice(Number(btn.dataset.courseDelete), 1);
-        sauvegarder();
-        afficherCourses();
-      };
-    });
+  if (courses.length === 0) {
+    liste.innerHTML = "<p>Ta liste est vide.</p>";
+    return;
   }
 
-  document.getElementById("addCourseBtn").onclick = () => {
+  const rayons = {};
+
+  courses.forEach((article, index) => {
+    const rayon = trouverRayon(article.name);
+
+    if (!rayons[rayon]) {
+      rayons[rayon] = [];
+    }
+
+    rayons[rayon].push({ ...article, index });
+  });
+
+  liste.innerHTML = Object.keys(rayons).map(rayon => `
+    <div class="course-category">
+      <h3>${rayon}</h3>
+
+      ${rayons[rayon].map(article => `
+        <div class="task-card ${article.done ? "task-done" : ""}">
+          <label>
+            <input type="checkbox"
+              data-course-check="${article.index}"
+              ${article.done ? "checked" : ""}>
+            <strong>${escapeHTML(article.name)}</strong>
+          </label>
+
+          <button data-course-delete="${article.index}">🗑️</button>
+        </div>
+      `).join("")}
+    </div>
+  `).join("");
+
+  liste.querySelectorAll("[data-course-check]").forEach(btn => {
+    btn.onchange = () => {
+      courses[Number(btn.dataset.courseCheck)].done = btn.checked;
+      sauvegarder();
+      afficherCourses();
+    };
+  });
+
+  liste.querySelectorAll("[data-course-delete]").forEach(btn => {
+    btn.onclick = () => {
+      courses.splice(Number(btn.dataset.courseDelete), 1);
+      sauvegarder();
+      afficherCourses();
+    };
+  });
+}
+    
+      document.getElementById("addCourseBtn").onclick = () => {
     const champ = document.getElementById("courseName");
     const nom = champ.value.trim();
 
@@ -487,6 +505,32 @@ function showCourses() {
   afficherCourses();
 }
 
+  function trouverRayon(nom) {
+  const article = nom.toLowerCase();
+
+  if (/pomme|banane|orange|tomate|salade|carotte|fruit|legume/.test(article))
+    return "🍎 Fruits et légumes";
+
+  if (/lait|fromage|yaourt|beurre|creme/.test(article))
+    return "🥛 Produits laitiers";
+
+  if (/pain|baguette|croissant|brioche/.test(article))
+    return "🥖 Boulangerie";
+
+  if (/poulet|boeuf|porc|poisson|viande|steak/.test(article))
+    return "🥩 Viande et poisson";
+
+  if (/eau|jus|cafe|the|soda/.test(article))
+    return "🥤 Boissons";
+
+  if (/lessive|liquide vaisselle|nettoyant|eponge/.test(article))
+    return "🧽 Entretien";
+
+  if (/savon|shampoing|dentifrice|gel douche/.test(article))
+    return "🧴 Hygiène";
+
+  return "📦 Autres";
+}
 function openPage(name) {
   if (!pages[name]) return;
 
