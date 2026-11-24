@@ -1083,14 +1083,10 @@ if (assistantBtn) {
     );
   });
 }
+const boutonAssistant = document.getElementById("assistantBtn");
 
-function parlerLifeOS(message) {
-  if (!("speechSynthesis" in window)) {
-    alert("La synthèse vocale est indisponible.");
-    return;
-  }
-
-  const voix = new SpeechSynthesisUtterance(message);
-  voix.lang = "fr-FR";
-  window.speechSynthesis.speak(voix);
+if (boutonAssistant) {
+  boutonAssistant.addEventListener("click", function() {
+    alert("Bonjour ! Je suis ton assistant LIFE OS.");
+  });
 }
