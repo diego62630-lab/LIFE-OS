@@ -1204,8 +1204,8 @@ const nettoyerArticle = texte => {
 
   // AJOUTER UN ARTICLE
   const ajoutCourse = commande.match(
-    /^(?:ajoute|ajouter|mets|met)\s+(.+?)\s+(?:a|dans)\s+(?:mes\s+)?courses?$/
-  );
+  /^(?:ajoute|ajouter|mets|met)\s+(.+?)\s+(?:a|aux|dans)\s+(?:(?:mes|ma)\s+)?courses?$/
+);
 
   if (ajoutCourse) {
     let nom = ajoutCourse[1].trim();
