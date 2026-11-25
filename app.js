@@ -1788,7 +1788,7 @@ micro.onresult = function(event) {
     event.results[0][0].transcript
   );
 
-  alert("LIFE a entendu : " + phrase);
+  
 
   if (lifeAttendCommande) {
     lifeExecuter(phrase);
