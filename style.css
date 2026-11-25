@@ -874,3 +874,53 @@ main > h2,
   border-radius: 10px;
   padding: 9px 12px;
 }
+/* PLANNING HEBDOMADAIRE MAISON */
+
+#pageContent:has(#listePlanningMaison) {
+  padding: 18px;
+}
+
+#listePlanningMaison h3 {
+  background: #718b76;
+  color: white;
+  padding: 12px 16px;
+  border-radius: 12px;
+  margin-top: 22px;
+}
+
+#listePlanningMaison .task-card {
+  background: #f5f8f2;
+  border: 1px solid #e1e9df;
+  border-radius: 16px;
+  padding: 16px;
+  margin: 10px 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+}
+
+#listePlanningMaison .task-card label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+#listePlanningMaison input[type="checkbox"] {
+  accent-color: #718b76;
+  width: 20px;
+  height: 20px;
+}
+
+#listePlanningMaison .task-done {
+  background: #eaf2e9;
+  opacity: 0.75;
+}
+
+#listePlanningMaison button {
+  background: #f1e5e1;
+  color: #9b6256;
+  border: none;
+  border-radius: 10px;
+  padding: 9px 12px;
+}
