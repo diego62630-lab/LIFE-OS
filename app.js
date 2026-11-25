@@ -844,7 +844,7 @@ function supprimerPlanningMaison(id) {
 
   afficherPlanningMaison();
 }
-function   showAgenda() {
+function  showAgenda() {
   const events = JSON.parse(
     localStorage.getItem("lifeos_events") || "[]"
   );
@@ -2290,3 +2290,10 @@ if (boutonLife) {
     );
   });
 }
+// LIFE OS - ACTIVATION DES BOUTONS
+document.querySelectorAll("[data-page]").forEach(button => {
+  button.addEventListener("click", () => {
+    const page = button.dataset.page;
+    openPage(page);
+  });
+});
