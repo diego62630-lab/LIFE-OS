@@ -664,6 +664,7 @@ function showMaison() {
   `;
 }
 
+
 function ouvrirMaison(rubrique) {
   if (rubrique === "menage") {
     pageContent.innerHTML = `
@@ -684,6 +685,17 @@ function ouvrirMaison(rubrique) {
       <button onclick="ajouterTacheMaison()">
         Ajouter une tâche
       </button>
+
+      <h3>Filtrer les tâches par pièce</h3>
+
+      <select id="filtreMaison" onchange="afficherTachesMaison()">
+        <option value="Toutes">🏠 Toutes les pièces</option>
+        <option value="Cuisine">🍽️ Cuisine</option>
+        <option value="Salon">🛋️ Salon</option>
+        <option value="Salle de bain">🚿 Salle de bain</option>
+        <option value="Chambres">🛏️ Chambres</option>
+        <option value="Autres">🏠 Autres</option>
+      </select>
 
       <div id="listeTachesMaison"></div>
 
@@ -819,6 +831,7 @@ function ajouterTacheMaison() {
 }
 
 
+
 function afficherTachesMaison() {
   const liste = document.getElementById("listeTachesMaison");
   if (!liste) return;
@@ -827,12 +840,18 @@ function afficherTachesMaison() {
     localStorage.getItem("lifeos_maison_menage") || "[]"
   );
 
-  if (taches.length === 0) {
-    liste.innerHTML = "<p>Aucune tâche ménagère pour le moment.</p>";
+  const filtre = document.getElementById("filtreMaison")?.value || "Toutes";
+
+  const tachesFiltrees = filtre === "Toutes"
+    ? taches
+    : taches.filter(tache => (tache.piece || "Autres") === filtre);
+
+  if (tachesFiltrees.length === 0) {
+    liste.innerHTML = "<p>Aucune tâche dans cette pièce.</p>";
     return;
   }
 
-  liste.innerHTML = taches.map(tache => `
+  liste.innerHTML = tachesFiltrees.map(tache => `
     <div class="task-card ${tache.faite ? "task-done" : ""}">
       <label>
         <input type="checkbox"
@@ -852,6 +871,7 @@ function afficherTachesMaison() {
     </div>
   `).join("");
 }
+
 
 function cocherTacheMaison(id) {
   const taches = JSON.parse(
