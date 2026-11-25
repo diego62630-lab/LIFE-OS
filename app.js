@@ -1136,7 +1136,6 @@ function escapeHTML(value) {
 })[char]);
 }
 
-alert("Nombre de boutons trouvés : " + document.querySelectorAll("[data-page]").length);
 
 
 
