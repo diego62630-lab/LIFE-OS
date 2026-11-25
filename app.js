@@ -663,14 +663,23 @@ function showMaison() {
     </section>
   `;
 }
+
 function ouvrirMaison(rubrique) {
   if (rubrique === "menage") {
     pageContent.innerHTML = `
       <h2>🧹 Ménage et rangement</h2>
       <p>Organisez les tâches ménagères de votre maison.</p>
 
+      <select id="maisonPiece">
+        <option value="Cuisine">🍽️ Cuisine</option>
+        <option value="Salon">🛋️ Salon</option>
+        <option value="Salle de bain">🚿 Salle de bain</option>
+        <option value="Chambres">🛏️ Chambres</option>
+        <option value="Autres">🏠 Autres</option>
+      </select>
+
       <input id="maisonTache" type="text"
-        placeholder="Exemple : nettoyer la cuisine">
+        placeholder="Exemple : nettoyer le sol">
 
       <button onclick="ajouterTacheMaison()">
         Ajouter une tâche
@@ -684,6 +693,7 @@ function ouvrirMaison(rubrique) {
     afficherTachesMaison();
   }
 }
+
 function   showAgenda() {
   const events = JSON.parse(
     localStorage.getItem("lifeos_events") || "[]"
@@ -777,8 +787,10 @@ document.querySelectorAll(".edit-event").forEach(button => {
     };
   });
 }
+
 function ajouterTacheMaison() {
   const champ = document.getElementById("maisonTache");
+  const piece = document.getElementById("maisonPiece").value;
   const nom = champ.value.trim();
 
   if (!nom) {
@@ -793,6 +805,7 @@ function ajouterTacheMaison() {
   taches.push({
     id: Date.now(),
     nom: nom,
+    piece: piece,
     faite: false
   });
 
@@ -804,6 +817,8 @@ function ajouterTacheMaison() {
   champ.value = "";
   afficherTachesMaison();
 }
+
+
 function afficherTachesMaison() {
   const liste = document.getElementById("listeTachesMaison");
   if (!liste) return;
@@ -823,7 +838,12 @@ function afficherTachesMaison() {
         <input type="checkbox"
           ${tache.faite ? "checked" : ""}
           onchange="cocherTacheMaison(${tache.id})">
-        ${tache.nom}
+        <span>
+          <strong>${tache.nom}</strong>
+          <small style="display:block;color:#718b76;margin-top:5px;">
+            ${tache.piece || "Autres"}
+          </small>
+        </span>
       </label>
 
       <button onclick="supprimerTacheMaison(${tache.id})">
@@ -832,6 +852,7 @@ function afficherTachesMaison() {
     </div>
   `).join("");
 }
+
 function cocherTacheMaison(id) {
   const taches = JSON.parse(
     localStorage.getItem("lifeos_maison_menage") || "[]"
