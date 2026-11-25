@@ -799,3 +799,78 @@ main > h2,
     transition-duration: 0.01ms !important;
   }
 }
+/* MAISON - DESIGN MENAGE */
+
+#pageContent:has(#listeTachesMaison) {
+  padding: 18px;
+}
+
+#pageContent:has(#listeTachesMaison) h2 {
+  color: #526b59;
+  font-size: 25px;
+  margin-bottom: 10px;
+}
+
+#pageContent:has(#listeTachesMaison) p {
+  color: #777f76;
+}
+
+#maisonTache {
+  width: 100%;
+  padding: 15px;
+  border: 1px solid #dce5dc;
+  border-radius: 14px;
+  background: #f8faf6;
+  font-size: 15px;
+  margin: 15px 0 10px;
+  box-sizing: border-box;
+}
+
+#pageContent:has(#listeTachesMaison) > button {
+  background: #718b76;
+  color: white;
+  border: none;
+  border-radius: 14px;
+  padding: 13px 18px;
+  font-size: 15px;
+  margin: 5px 5px 15px 0;
+}
+
+#listeTachesMaison .task-card {
+  background: #f5f8f2;
+  border: 1px solid #e1e9df;
+  border-radius: 16px;
+  padding: 16px;
+  margin: 10px 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  box-shadow: 0 3px 10px rgba(50, 70, 50, 0.05);
+}
+
+#listeTachesMaison .task-card label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #46584a;
+}
+
+#listeTachesMaison input[type="checkbox"] {
+  accent-color: #718b76;
+  width: 20px;
+  height: 20px;
+}
+
+#listeTachesMaison .task-done {
+  background: #eaf2e9;
+  opacity: 0.75;
+}
+
+#listeTachesMaison button {
+  background: #f1e5e1;
+  color: #9b6256;
+  border: none;
+  border-radius: 10px;
+  padding: 9px 12px;
+}
