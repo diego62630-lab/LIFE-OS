@@ -1,4 +1,4 @@
-
+alert("TEST LIFE OS");
 const pageContent = document.getElementById("pageContent");
 // NOTIFICATIONS LIFE OS
 
