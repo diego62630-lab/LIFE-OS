@@ -1784,6 +1784,7 @@ function lifeDemarrerEcoute() {
 
   micro.onresult = function(event) {
     const phrase = lifeNormaliser(
+      alert("LIFE a entendu : " + phrase);
       event.results[0][0].transcript
     );
 
