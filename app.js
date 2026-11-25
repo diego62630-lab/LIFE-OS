@@ -401,6 +401,7 @@ function updateHomeDashboard() {
   }
 }
 
+
 function showCourses() {
   let courses = JSON.parse(
     localStorage.getItem("lifeCourses") || "[]"
@@ -417,71 +418,104 @@ function showCourses() {
       <div class="tasks-form">
         <input id="courseName" type="text"
           placeholder="Nom de l'article...">
+
+        <input id="coursePrice" type="number"
+          min="0" step="0.01"
+          placeholder="Prix en €">
+
         <button id="addCourseBtn">➕ Ajouter</button>
       </div>
 
+      <div id="coursesTotal"></div>
       <div id="coursesList"></div>
     </div>
   `;
 
   function afficherCourses() {
-  const liste = document.getElementById("coursesList");
+    const liste = document.getElementById("coursesList");
 
-  if (courses.length === 0) {
-    liste.innerHTML = "<p>Ta liste est vide.</p>";
-    return;
-  }
+    const total = courses.reduce((somme, article) => {
+      const prix = Number(article.price);
+      return somme + (
+        article.price !== undefined &&
+        article.price !== "" &&
+        Number.isFinite(prix) && prix >= 0
+          ? prix
+          : 0
+      );
+    }, 0);
 
-  const rayons = {};
+    document.getElementById("coursesTotal").innerHTML = `
+      <div class="budget-card">
+        <small>🧾 Total estimé des courses</small>
+        <h2>${total.toFixed(2)} €</h2>
+      </div>
+    `;
 
-  courses.forEach((article, index) => {
-    const rayon = trouverRayon(article.name);
-
-    if (!rayons[rayon]) {
-      rayons[rayon] = [];
+    if (courses.length === 0) {
+      liste.innerHTML = "<p>Ta liste est vide.</p>";
+      return;
     }
 
-    rayons[rayon].push({ ...article, index });
-  });
+    const rayons = {};
 
-  liste.innerHTML = Object.keys(rayons).map(rayon => `
-    <div class="course-category">
-      <h3>${rayon}</h3>
+    courses.forEach((article, index) => {
+      const rayon = trouverRayon(article.name);
 
-      ${rayons[rayon].map(article => `
-        <div class="task-card ${article.done ? "task-done" : ""}">
-          <label>
-            <input type="checkbox"
-              data-course-check="${article.index}"
-              ${article.done ? "checked" : ""}>
-            <strong>${escapeHTML(article.name)}</strong>
-          </label>
+      if (!rayons[rayon]) {
+        rayons[rayon] = [];
+      }
 
-          <button data-course-delete="${article.index}">🗑️</button>
-        </div>
-      `).join("")}
-    </div>
-  `).join("");
+      rayons[rayon].push({ ...article, index });
+    });
 
-  liste.querySelectorAll("[data-course-check]").forEach(btn => {
-    btn.onchange = () => {
-      courses[Number(btn.dataset.courseCheck)].done = btn.checked;
-      sauvegarder();
-      afficherCourses();
-    };
-  });
+    liste.innerHTML = Object.keys(rayons).map(rayon => `
+      <div class="course-category">
+        <h3>${rayon}</h3>
 
-  liste.querySelectorAll("[data-course-delete]").forEach(btn => {
-    btn.onclick = () => {
-      courses.splice(Number(btn.dataset.courseDelete), 1);
-      sauvegarder();
-      afficherCourses();
-    };
-  });
-}
-    
-      document.getElementById("addCourseBtn").onclick = () => {
+        ${rayons[rayon].map(article => `
+          <div class="task-card ${article.done ? "task-done" : ""}">
+            <label>
+              <input type="checkbox"
+                data-course-check="${article.index}"
+                ${article.done ? "checked" : ""}>
+              <strong>${escapeHTML(article.name)}</strong>
+            </label>
+
+            <span>
+              ${article.price !== undefined &&
+                article.price !== "" &&
+                Number.isFinite(Number(article.price))
+                  ? Number(article.price).toFixed(2) + " €"
+                  : "Prix non renseigné"}
+            </span>
+
+            <button data-course-delete="${article.index}">🗑️</button>
+          </div>
+        `).join("")}
+      </div>
+    `).join("");
+
+    liste.querySelectorAll("[data-course-check]").forEach(btn => {
+      btn.onchange = () => {
+        courses[Number(btn.dataset.courseCheck)].done = btn.checked;
+        sauvegarder();
+        afficherCourses();
+      };
+    });
+
+    liste.querySelectorAll("[data-course-delete]").forEach(btn => {
+      btn.onclick = () => {
+        courses.splice(Number(btn.dataset.courseDelete), 1);
+        sauvegarder();
+        afficherCourses();
+      };
+    });
+  }
+
+  document.getElementById("addCourseBtn").onclick = () => {
     const champ = document.getElementById("courseName");
+    const champPrix = document.getElementById("coursePrice");
     const nom = champ.value.trim();
 
     if (!nom) {
@@ -489,9 +523,24 @@ function showCourses() {
       return;
     }
 
-    courses.push({ name: nom, done: false });
+    const prix = champPrix.value.trim();
+
+    if (prix !== "" && (
+      !Number.isFinite(Number(prix)) || Number(prix) < 0
+    )) {
+      alert("Entre un prix valide.");
+      return;
+    }
+
+    courses.push({
+      name: nom,
+      price: prix === "" ? null : Number(prix),
+      done: false
+    });
+
     sauvegarder();
     champ.value = "";
+    champPrix.value = "";
     afficherCourses();
     champ.focus();
   };
