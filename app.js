@@ -1271,6 +1271,46 @@ function lifeExecuter(commande) {
     localStorage.setItem("lifeCourses", JSON.stringify(courses));
     lifeDire(nom + " ajouté à ta liste de courses.");
 
+  // SUPPRIMER UN RENDEZ-VOUS
+  } else if (
+    /^(?:supprime|enleve|retire)\s+(?:(?:mon|le|un)\s+)?(?:rendez-vous|rendez vous|evenement)\b/.test(commande)
+  ) {
+    const nomRecherche = commande
+      .replace(/^(?:supprime|enleve|retire)\s+(?:(?:mon|le|un)\s+)?(?:rendez-vous|rendez vous|evenement)\s*/, "")
+      .replace(/\b(chez|le|la|les|du|des|de|un|une|mon|ma|mes)\b/g, "")
+      .trim()
+      .replace(/\s+/g, " ");
+
+    const events = JSON.parse(
+      localStorage.getItem("lifeos_events") || "[]"
+    );
+
+    const nettoyerNom = nom =>
+      lifeNormaliser(nom)
+        .replace(/\b(chez|le|la|les|du|des|de|un|une|mon|ma|mes)\b/g, "")
+        .trim()
+        .replace(/\s+/g, " ");
+
+    const correspondances = events
+      .map((event, index) => ({ event, index }))
+      .filter(item =>
+        nettoyerNom(item.event.name) === nettoyerNom(nomRecherche)
+      );
+
+    if (correspondances.length === 0) {
+      lifeDire("Je ne trouve pas ce rendez-vous dans ton agenda.");
+    } else if (correspondances.length > 1) {
+      lifeDire("J'ai trouvé plusieurs rendez-vous. Précise lequel tu veux supprimer.");
+    } else {
+      const index = correspondances[0].index;
+      const rendezVous = events.splice(index, 1)[0];
+
+      localStorage.setItem("lifeos_events", JSON.stringify(events));
+
+      openPage("agenda");
+      lifeDire("Ton rendez-vous " + rendezVous.name + " a été supprimé.");
+    }
+
   // SUPPRIMER UN ARTICLE
   } else if (
     commande.includes("supprime") ||
