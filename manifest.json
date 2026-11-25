@@ -1,25 +1,21 @@
-
 {
-  "name": "LIFE-OS",
-  "short_name": "LIFE-OS",
+  "id": "./",
+  "name": "LIFE OS",
+  "short_name": "LIFE OS",
   "description": "Votre espace personnel de gestion de vie",
   "lang": "fr",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
   "orientation": "portrait",
-  "background_color": "#101923",
-  "theme_color": "#101923",
+  "background_color": "#050B16",
+  "theme_color": "#050B16",
   "icons": [
     {
-      "src": "./icons/icon-192.png",
+      "src": "./icon-192.png",
       "sizes": "192x192",
-      "type": "image/png"
-    },
-    {
-      "src": "./icons/icon-512.png",
-      "sizes": "512x512",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any"
     }
   ]
 }
