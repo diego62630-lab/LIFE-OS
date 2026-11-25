@@ -1323,14 +1323,17 @@ function lifeExecuter(commande) {
   } else if (
     /^(?:ajoute|ajouter|mets|met)\s+(?:un\s+)?(?:rendez-vous|rendez vous|evenement)\b/.test(commande)
   ) {
+    
     const dateMot = commande.match(/\b(aujourd'hui|demain)\b/);
+
+    const moisMatch = commande.match(
+      /\b(?:le\s+)?(\d{1,2})\s+(janvier|fevrier|mars|avril|mai|juin|juillet|aout|septembre|octobre|novembre|decembre)\b/
+    );
+
     const dateChiffres = commande.match(
       /\b(?:le\s+)?(\d{1,2})[\/-](\d{1,2})(?:[\/-](\d{2,4}))?\b/
     );
 
-    const heureMatch = commande.match(
-      /\b(?:a\s*)?(\d{1,2})(?::(\d{2})|h(?:\s*(\d{1,2}))?| heures?(?:\s*(\d{1,2}))?)\b/
-    );
 
     if ((!dateMot && !dateChiffres) || !heureMatch) {
       lifeDire("Précise le jour et l'heure du rendez-vous.");
@@ -1340,11 +1343,42 @@ function lifeExecuter(commande) {
     const maintenant = new Date();
     let dateRendezVous = new Date(maintenant);
 
+
     if (dateMot) {
       if (dateMot[1] === "demain") {
         dateRendezVous.setDate(dateRendezVous.getDate() + 1);
       }
-    } else {
+    } else if (moisMatch) {
+      const mois = [
+        "janvier", "fevrier", "mars", "avril",
+        "mai", "juin", "juillet", "aout",
+        "septembre", "octobre", "novembre", "decembre"
+      ];
+
+      const jour = Number(moisMatch[1]);
+      const numeroMois = mois.indexOf(moisMatch[2]);
+
+      dateRendezVous = new Date(
+        maintenant.getFullYear(),
+        numeroMois,
+        jour
+      );
+
+      if (dateRendezVous < maintenant) {
+        dateRendezVous.setFullYear(
+          dateRendezVous.getFullYear() + 1
+        );
+      }
+
+      if (
+        dateRendezVous.getMonth() !== numeroMois ||
+        dateRendezVous.getDate() !== jour
+      ) {
+        lifeDire("La date indiquée n'est pas valide.");
+        return;
+      }
+
+    } else if (dateChiffres) {
       const jour = Number(dateChiffres[1]);
       const mois = Number(dateChiffres[2]);
       let annee = dateChiffres[3]
@@ -1364,6 +1398,7 @@ function lifeExecuter(commande) {
         return;
       }
     }
+
 
     const heure = Number(heureMatch[1]);
     const minutes = Number(
