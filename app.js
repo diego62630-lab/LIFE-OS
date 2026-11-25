@@ -1550,11 +1550,15 @@ function lifeExecuter(commande) {
     }
 
   // SUPPRIMER UN ARTICLE
-  } else if (
-    commande.includes("supprime") ||
-    commande.includes("enleve") ||
-    commande.includes("retire")
+  }   else if (
+    (
+      commande.includes("supprime") ||
+      commande.includes("enleve") ||
+      commande.includes("retire")
+    ) &&
+    !commande.includes("tache")
   ) {
+
     const nom = nettoyerArticle(
       commande
         .replace(/^(?:supprime|enleve|retire)\s+/, "")
