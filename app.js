@@ -1290,6 +1290,32 @@ function lifeExecuter(commande) {
 
  
   } else if (
+    /^(?:supprime|supprimer|enleve|retire)\s+(?:(?:la|ma|une)\s+)?tache\s+/.test(commande)
+  ) {
+    const nom = commande
+      .replace(/^(?:supprime|supprimer|enleve|retire)\s+/, "")
+      .replace(/^(?:la|ma|une)\s+tache\s+/, "")
+      .replace(/^tache\s+/, "")
+      .trim();
+
+    const tasks = getTasks();
+
+    const index = tasks.findIndex(task =>
+      lifeNormaliser(task.name).trim() ===
+      lifeNormaliser(nom).trim()
+    );
+
+    if (index === -1) {
+      lifeDire("Je ne trouve pas cette tâche.");
+    } else {
+      const nomSupprime = tasks[index].name;
+      tasks.splice(index, 1);
+      saveTasks(tasks);
+      openPage("tasks");
+      lifeDire("J'ai supprimé la tâche " + nomSupprime);
+    }
+
+  } else if (
     /^(?:termine|terminer|acheve|achever|coche)\s+/.test(commande)
   ) {
     const nom = commande
