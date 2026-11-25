@@ -1199,7 +1199,8 @@ const nettoyerArticle = texte => {
     .replace(/\b(les|le|la|des|du|de|un|une|comme|achete|achetes|achetee|achetees|dans|mes)\b/g, "")
     .trim()
     .replace(/\s+/g, " ")
-    .replace(/s$/, "");
+    .replace(/\s+/g, " ")
+.replace(/s\b/g, "");
 };
 
   // AJOUTER UN ARTICLE
