@@ -1,11 +1,16 @@
-
 <!DOCTYPE html>
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#050B16">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="LIFE OS">
   <title>LIFE OS</title>
+  <link rel="manifest" href="./manifest.json">
+  <link rel="icon" type="image/png" href="./icon-192.png">
+  <link rel="apple-touch-icon" href="./icon-192.png">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -29,44 +34,36 @@
 
       <h2>Votre espace personnel</h2>
 
-      
-<section class="modules">
-  <button class="module" data-page="agenda">
-    <span>▦</span><b>Agenda</b>
-    <small>Rendez-vous et rappels</small>
-  </button>
-
-  <button class="module" data-page="budget">
-    <span>€</span><b>Budget</b>
-    <small>Gérez vos finances</small>
-  </button>
-
-  <button class="module" data-page="courses">
-    <span>🛒</span><b>Courses</b>
-    <small>Comparez les prix</small>
-  </button>
-
-  <button class="module" data-page="tasks">
-    <span>✓</span><b>Tâches</b>
-    <small>Organisez votre quotidien</small>
-  </button>
-
-  <button class="module" data-page="documents">
-    <span>▣</span><b>Documents</b>
-    <small>Vos fichiers</small>
-  </button>
-
-  <button class="module" data-page="activities">
-    <span>☆</span><b>Activités</b>
-    <small>Loisirs et sorties</small>
-  </button>
-
-  <button class="module" data-page="maison">
-    <span>🏡</span><b>Ma Maison</b>
-    <small>Gérez votre maison</small>
-  </button>
-</section>
-
+      <section class="modules">
+        <button class="module" data-page="agenda">
+          <span>▦</span><b>Agenda</b>
+          <small>Rendez-vous et rappels</small>
+        </button>
+        <button class="module" data-page="budget">
+          <span>€</span><b>Budget</b>
+          <small>Gérez vos finances</small>
+        </button>
+        <button class="module" data-page="courses">
+          <span>🛒</span><b>Courses</b>
+          <small>Comparez les prix</small>
+        </button>
+        <button class="module" data-page="tasks">
+          <span>✓</span><b>Tâches</b>
+          <small>Organisez votre quotidien</small>
+        </button>
+        <button class="module" data-page="documents">
+          <span>▣</span><b>Documents</b>
+          <small>Vos fichiers</small>
+        </button>
+        <button class="module" data-page="activities">
+          <span>☆</span><b>Activités</b>
+          <small>Loisirs et sorties</small>
+        </button>
+        <button class="module" data-page="maison">
+          <span>🏡</span><b>Ma Maison</b>
+          <small>Gérez votre maison</small>
+        </button>
+      </section>
 
       <section class="summary">
         <h2>Mon résumé</h2>
@@ -90,7 +87,14 @@
     </nav>
   </div>
 
-
-<script src="./app.js"></script>
+  <script src="./app.js"></script>
+  <script>
+    if ("serviceWorker" in navigator) {
+      window.addEventListener("load", () => {
+        navigator.serviceWorker.register("./service-worker.js")
+          .catch(error => console.error("LIFE OS service worker :", error));
+      });
+    }
+  </script>
 </body>
 </html>
