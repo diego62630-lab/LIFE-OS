@@ -1133,15 +1133,10 @@ function escapeHTML(value) {
     ">": "&gt;",
     '"': "&quot;",
     "'": "&#39;"
-  })[char]);
+})[char]);
+}
 
 alert("Nombre de boutons trouvés : " + document.querySelectorAll("[data-page]").length);
-document.querySelectorAll("[data-page]").forEach(button => {
-  button.addEventListener("click", () => {
-    alert("Clic reçu : " + button.dataset.page);
-    openPage(button.dataset.page);
-  });
-});
 
 
 
