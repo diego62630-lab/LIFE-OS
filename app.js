@@ -1271,6 +1271,152 @@ function lifeExecuter(commande) {
     localStorage.setItem("lifeCourses", JSON.stringify(courses));
     lifeDire(nom + " ajouté à ta liste de courses.");
 
+  // MODIFIER UN RENDEZ-VOUS
+  } else if (
+    /^(?:deplace|deplacer|change|modifie)\s+(?:(?:mon|le|un)\s+)?(?:rendez-vous|rendez vous|rdv)\b/.test(commande)
+  ) {
+    const dateMot = commande.match(/\b(aujourd'hui|demain)\b/);
+
+    const moisMatch = commande.match(
+      /\b(?:le\s+)?(\d{1,2})\s+(janvier|fevrier|mars|avril|mai|juin|juillet|aout|septembre|octobre|novembre|decembre)\b/
+    );
+
+    const dateChiffres = commande.match(
+      /\b(?:le\s+)?(\d{1,2})[\/-](\d{1,2})(?:[\/-](\d{2,4}))?\b/
+    );
+
+    if ((!dateMot && !moisMatch && !dateChiffres) || !heureMatch) {
+      lifeDire("Précise la nouvelle date et la nouvelle heure.");
+      return;
+    }
+
+    const maintenant = new Date();
+    let nouvelleDate = new Date(maintenant);
+
+    if (dateMot) {
+      if (dateMot[1] === "demain") {
+        nouvelleDate.setDate(nouvelleDate.getDate() + 1);
+      }
+    } else if (moisMatch) {
+      const mois = [
+        "janvier", "fevrier", "mars", "avril",
+        "mai", "juin", "juillet", "aout",
+        "septembre", "octobre", "novembre", "decembre"
+      ];
+
+      const jour = Number(moisMatch[1]);
+      const numeroMois = mois.indexOf(moisMatch[2]);
+
+      nouvelleDate = new Date(
+        maintenant.getFullYear(),
+        numeroMois,
+        jour
+      );
+
+      if (
+        nouvelleDate.getMonth() !== numeroMois ||
+        nouvelleDate.getDate() !== jour
+      ) {
+        lifeDire("La nouvelle date n'est pas valide.");
+        return;
+      }
+
+      if (
+        nouvelleDate < new Date(
+          maintenant.getFullYear(),
+          maintenant.getMonth(),
+          maintenant.getDate()
+        )
+      ) {
+        nouvelleDate.setFullYear(nouvelleDate.getFullYear() + 1);
+      }
+    } else if (dateChiffres) {
+      const jour = Number(dateChiffres[1]);
+      const mois = Number(dateChiffres[2]);
+      let annee = dateChiffres[3]
+        ? Number(dateChiffres[3])
+        : maintenant.getFullYear();
+
+      if (annee < 100) annee += 2000;
+
+      nouvelleDate = new Date(annee, mois - 1, jour);
+
+      if (
+        nouvelleDate.getFullYear() !== annee ||
+        nouvelleDate.getMonth() !== mois - 1 ||
+        nouvelleDate.getDate() !== jour
+      ) {
+        lifeDire("La nouvelle date n'est pas valide.");
+        return;
+      }
+
+      if (!dateChiffres[3] && nouvelleDate < maintenant) {
+        nouvelleDate.setFullYear(nouvelleDate.getFullYear() + 1);
+      }
+    }
+
+    const heure = Number(heureMatch[1]);
+    const minutes = Number(
+      heureMatch[2] || heureMatch[3] || heureMatch[4] || 0
+    );
+
+    if (heure > 23 || minutes > 59) {
+      lifeDire("La nouvelle heure n'est pas valide.");
+      return;
+    }
+
+    const events = JSON.parse(
+      localStorage.getItem("lifeos_events") || "[]"
+    );
+
+    const rendezVousFuturs = events
+      .map((event, index) => ({ event, index }))
+      .filter(item => {
+        const dateEvent = new Date(
+          item.event.date + "T" + (item.event.time || "00:00")
+        );
+        return dateEvent >= maintenant;
+      });
+
+    if (rendezVousFuturs.length === 0) {
+      lifeDire("Je ne trouve aucun rendez-vous à venir dans ton agenda.");
+      return;
+    }
+
+    if (rendezVousFuturs.length > 1) {
+      lifeDire("Tu as plusieurs rendez-vous à venir. Précise lequel tu veux déplacer.");
+      return;
+    }
+
+    const rendezVous = rendezVousFuturs[0].event;
+
+    rendezVous.date = [
+      nouvelleDate.getFullYear(),
+      String(nouvelleDate.getMonth() + 1).padStart(2, "0"),
+      String(nouvelleDate.getDate()).padStart(2, "0")
+    ].join("-");
+
+    rendezVous.time =
+      String(heure).padStart(2, "0") + ":" +
+      String(minutes).padStart(2, "0");
+
+    events.sort((a, b) =>
+      (a.date + a.time).localeCompare(b.date + b.time)
+    );
+
+    localStorage.setItem("lifeos_events", JSON.stringify(events));
+
+    openPage("agenda");
+    lifeDire(
+      "Ton rendez-vous " + rendezVous.name +
+      " a été déplacé au " +
+      nouvelleDate.toLocaleDateString("fr-FR", {
+        day: "numeric",
+        month: "long"
+      }) +
+      " à " + rendezVous.time.replace(":", " heures ") + "."
+    );
+
     // SUPPRIMER UN RENDEZ-VOUS
   } else if (
     /^(?:supprime|enleve|retire)\s+.*(?:rendez-vous|rendez vous|evenement)\b/.test(commande)
