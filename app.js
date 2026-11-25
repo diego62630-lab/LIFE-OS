@@ -1463,6 +1463,77 @@ function lifeExecuter(commande) {
     openPage("agenda");
     lifeDire("Ton rendez-vous " + nom + " est ajouté à ton agenda.");
 
+  // CONSULTER LES RENDEZ-VOUS
+  } else if (
+    commande.includes("aujourd hui") ||
+    commande.includes("aujourd'hui") ||
+    commande.includes("demain") ||
+    commande.includes("prochain") ||
+    commande.includes("rendez vous")
+  ) {
+    const events = JSON.parse(
+      localStorage.getItem("lifeos_events") || "[]"
+    );
+
+    const maintenant = new Date();
+
+    const dateDuJour = [
+      maintenant.getFullYear(),
+      String(maintenant.getMonth() + 1).padStart(2, "0"),
+      String(maintenant.getDate()).padStart(2, "0")
+    ].join("-");
+
+    let selection = [];
+
+    if (
+      commande.includes("aujourd hui") ||
+      commande.includes("aujourd'hui")
+    ) {
+      selection = events.filter(event => event.date === dateDuJour);
+    } else if (commande.includes("demain")) {
+      const demain = new Date(maintenant);
+      demain.setDate(demain.getDate() + 1);
+
+      const dateDemain = [
+        demain.getFullYear(),
+        String(demain.getMonth() + 1).padStart(2, "0"),
+        String(demain.getDate()).padStart(2, "0")
+      ].join("-");
+
+      selection = events.filter(event => event.date === dateDemain);
+    } else {
+      selection = events.filter(event => {
+        const dateEvent = new Date(
+          event.date + "T" + (event.time || "00:00")
+        );
+        return dateEvent >= maintenant;
+      });
+    }
+
+    selection.sort((a, b) =>
+      (a.date + (a.time || "")).localeCompare(
+        b.date + (b.time || "")
+      )
+    );
+
+    if (selection.length === 0) {
+      lifeDire("Tu n'as aucun rendez-vous prévu pour cette période.");
+    } else {
+      const reponses = selection.map(event => {
+        const date = new Date(event.date + "T00:00:00")
+          .toLocaleDateString("fr-FR", {
+            day: "numeric",
+            month: "long"
+          });
+
+        return event.name + ", le " + date +
+          " à " + (event.time || "heure non précisée");
+      });
+
+      lifeDire("Voici ton planning : " + reponses.join(". "));
+      openPage("agenda");
+    }
+
   } else if (commande.includes("agenda")) {
     openPage("agenda");
     lifeDire("J'ouvre ton agenda.");
