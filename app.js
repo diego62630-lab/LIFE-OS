@@ -1134,7 +1134,7 @@ function escapeHTML(value) {
     '"': "&quot;",
     "'": "&#39;"
   })[char]);
-}alert("Le JavaScript arrive bien jusqu'aux boutons !");
+
 alert("Nombre de boutons trouvés : " + document.querySelectorAll("[data-page]").length);
 document.querySelectorAll("[data-page]").forEach(button => {
   button.addEventListener("click", () => {
