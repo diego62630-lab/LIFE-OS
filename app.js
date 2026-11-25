@@ -665,7 +665,9 @@ function showMaison() {
 }
 
 
+
 function ouvrirMaison(rubrique) {
+
   if (rubrique === "menage") {
     pageContent.innerHTML = `
       <h2>🧹 Ménage et rangement</h2>
@@ -703,9 +705,145 @@ function ouvrirMaison(rubrique) {
     `;
 
     afficherTachesMaison();
+
+  } else if (rubrique === "planning") {
+
+    pageContent.innerHTML = `
+      <h2>📅 Planning hebdomadaire</h2>
+      <p>Organisez votre ménage sur toute la semaine.</p>
+
+      <select id="planningJour">
+        <option value="Lundi">Lundi</option>
+        <option value="Mardi">Mardi</option>
+        <option value="Mercredi">Mercredi</option>
+        <option value="Jeudi">Jeudi</option>
+        <option value="Vendredi">Vendredi</option>
+        <option value="Samedi">Samedi</option>
+        <option value="Dimanche">Dimanche</option>
+      </select>
+
+      <input id="planningTache" type="text"
+        placeholder="Exemple : aspirer le salon">
+
+      <button onclick="ajouterPlanningMaison()">
+        Ajouter au planning
+      </button>
+
+      <div id="listePlanningMaison"></div>
+
+      <button onclick="showMaison()">⬅ Retour à Ma Maison</button>
+    `;
+    afficherPlanningMaison();
   }
 }
 
+function ajouterPlanningMaison() {
+  const jour = document.getElementById("planningJour").value;
+  const champ = document.getElementById("planningTache");
+  const nom = champ.value.trim();
+
+  if (!nom) {
+    alert("Écris une tâche pour le planning.");
+    return;
+  }
+
+  const planning = JSON.parse(
+    localStorage.getItem("lifeos_planning_maison") || "[]"
+  );
+
+  planning.push({
+    id: Date.now(),
+    jour: jour,
+    nom: nom,
+    faite: false
+  });
+
+  localStorage.setItem(
+    "lifeos_planning_maison",
+    JSON.stringify(planning)
+  );
+
+  champ.value = "";
+  afficherPlanningMaison();
+}
+function afficherPlanningMaison() {
+  const liste = document.getElementById("listePlanningMaison");
+  if (!liste) return;
+
+  const planning = JSON.parse(
+    localStorage.getItem("lifeos_planning_maison") || "[]"
+  );
+
+  const jours = [
+    "Lundi", "Mardi", "Mercredi", "Jeudi",
+    "Vendredi", "Samedi", "Dimanche"
+  ];
+
+  if (planning.length === 0) {
+    liste.innerHTML = "<p>Aucune tâche planifiée pour le moment.</p>";
+    return;
+  }
+
+  liste.innerHTML = jours.map(jour => {
+    const taches = planning.filter(t => t.jour === jour);
+
+    return `
+      <section>
+        <h3>${jour}</h3>
+        ${
+          taches.length
+            ? taches.map(tache => `
+              <div class="task-card ${tache.faite ? "task-done" : ""}">
+                <label>
+                  <input type="checkbox"
+                    ${tache.faite ? "checked" : ""}
+                    onchange="cocherPlanningMaison(${tache.id})">
+                  <span>${tache.nom}</span>
+                </label>
+                <button onclick="supprimerPlanningMaison(${tache.id})">
+                  Supprimer
+                </button>
+              </div>
+            `).join("")
+            : "<p>Aucune tâche prévue.</p>"
+        }
+      </section>
+    `;
+  }).join("");
+}
+function cocherPlanningMaison(id) {
+  const planning = JSON.parse(
+    localStorage.getItem("lifeos_planning_maison") || "[]"
+  );
+
+  const tache = planning.find(t => t.id === id);
+
+  if (tache) {
+    tache.faite = !tache.faite;
+  }
+
+  localStorage.setItem(
+    "lifeos_planning_maison",
+    JSON.stringify(planning)
+  );
+
+  afficherPlanningMaison();
+}
+
+function supprimerPlanningMaison(id) {
+  const planning = JSON.parse(
+    localStorage.getItem("lifeos_planning_maison") || "[]"
+  );
+
+  const nouveauPlanning = planning.filter(t => t.id !== id);
+
+  localStorage.setItem(
+    "lifeos_planning_maison",
+    JSON.stringify(nouveauPlanning)
+  );
+
+  afficherPlanningMaison();
+}
 function   showAgenda() {
   const events = JSON.parse(
     localStorage.getItem("lifeos_events") || "[]"
