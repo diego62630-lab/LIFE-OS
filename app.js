@@ -1271,6 +1271,68 @@ function lifeExecuter(commande) {
     localStorage.setItem("lifeCourses", JSON.stringify(courses));
     lifeDire(nom + " ajouté à ta liste de courses.");
 
+  // GESTION VOCALE DES TACHES
+
+  } else if (
+    /^ajoute(?:r)?\s+(?:une?\s+)?tache\b/.test(commande)
+  ) {
+    const nom = commande
+      .replace(/^ajoute(?:r)?\s+(?:une?\s+)?tache\s*[:,-]?\s*/, "")
+      .trim();
+
+    if (!nom) {
+      lifeDire("Quel nom veux-tu donner à cette tâche ?");
+      return;
+    }
+
+    addTask(nom, "", "normal");
+    lifeDire("J'ai ajouté la tâche : " + nom);
+
+  } else if (
+    /^(?:termine|terminer|acheve|achever|coche)\s+(?:(?:ma|la|tache)\s+)?(?:tache\s+)?/.test(commande)
+  ) {
+    const nom = commande
+      .replace(/^(?:termine|terminer|acheve|achever|coche)\s+/, "")
+      .replace(/^tache\s+/, "")
+      .trim();
+
+    const tasks = getTasks();
+
+    const tache = tasks.find(task =>
+      lifeNormaliser(task.name).trim() ===
+      lifeNormaliser(nom.replace(/^(?:ma|la)\s+tache\s+/, "")).trim()
+    );
+
+    if (!tache) {
+      lifeDire("Je ne trouve pas cette tâche.");
+    } else {
+      tache.done = true;
+      saveTasks(tasks);
+      showTasks();
+      lifeDire("La tâche " + tache.name + " est terminée.");
+    }
+
+  } else if (
+    commande.includes("tache") &&
+    (
+      commande.includes("quelles") ||
+      commande.includes("liste") ||
+      commande.includes("affiche") ||
+      commande.includes("mes taches")
+    )
+  ) {
+    const tasks = getTasks();
+    const restantes = tasks.filter(task => !task.done);
+
+    openPage("tasks");
+
+    if (restantes.length === 0) {
+      lifeDire("Tu n'as aucune tâche en attente.");
+    } else {
+      const noms = restantes.map(task => task.name);
+      lifeDire("Voici tes tâches : " + noms.join(". "));
+    }
+
   // MODIFIER UN RENDEZ-VOUS
   } else if (
     /^(?:deplace|deplacer|change|modifie)\s+(?:(?:mon|le|un)\s+)?(?:rendez-vous|rendez vous|rdv)\b/.test(commande)
