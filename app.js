@@ -1,4 +1,4 @@
-alert("TEST LIFE OS");
+
 const pageContent = document.getElementById("pageContent");
 // NOTIFICATIONS LIFE OS
 
@@ -1136,7 +1136,10 @@ function escapeHTML(value) {
   })[char]);
 }alert("Le JavaScript arrive bien jusqu'aux boutons !");
 document.querySelectorAll("[data-page]").forEach(button => {
-  button.addEventListener("click", () => openPage(button.dataset.page));
+  button.addEventListener("click", () => {
+    alert("Bouton détecté : " + button.dataset.page);
+    openPage(button.dataset.page);
+  });
 });
 
 
