@@ -1782,30 +1782,32 @@ function lifeDemarrerEcoute() {
   micro.continuous = false;
   micro.interimResults = false;
 
-  micro.onresult = function(event) {
-    const phrase = lifeNormaliser(
-      alert("LIFE a entendu : " + phrase);
-      event.results[0][0].transcript
-    );
+  
+micro.onresult = function(event) {
+  const phrase = lifeNormaliser(
+    event.results[0][0].transcript
+  );
 
-    if (lifeAttendCommande) {
-      lifeExecuter(phrase);
-      return;
+  alert("LIFE a entendu : " + phrase);
+
+  if (lifeAttendCommande) {
+    lifeExecuter(phrase);
+    return;
+  }
+
+  const position = phrase.indexOf("life");
+
+  if (position !== -1) {
+    const suite = phrase.slice(position + 4).trim();
+
+    if (suite.length > 0) {
+      lifeExecuter(suite);
+    } else {
+      lifeAttendCommande = true;
+      lifeDire("Oui, je t'écoute.");
     }
-
-    const position = phrase.indexOf("life");
-
-    if (position !== -1) {
-      const suite = phrase.slice(position + 4).trim();
-
-      if (suite.length > 0) {
-        lifeExecuter(suite);
-      } else {
-        lifeAttendCommande = true;
-        lifeDire("Oui, je t'écoute.");
-      }
-    }
-  };
+  }
+};
 
   micro.onerror = function(event) {
     if (
