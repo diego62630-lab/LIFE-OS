@@ -1138,7 +1138,6 @@ function escapeHTML(value) {
 alert("Nombre de boutons trouvés : " + document.querySelectorAll("[data-page]").length);
 document.querySelectorAll("[data-page]").forEach(button => {
   button.addEventListener("click", () => {
-    alert("Bouton détecté : " + button.dataset.page);
     openPage(button.dataset.page);
   });
 });
