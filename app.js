@@ -1331,7 +1331,7 @@ function lifeExecuter(commande) {
     } else {
       const noms = restantes.map(task => task.name);
       lifeDire("Voici tes tâches : " + noms.join(". "));
-    }
+    } 
 
   // MODIFIER UN RENDEZ-VOUS
   } else if (
