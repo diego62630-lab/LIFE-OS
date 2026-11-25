@@ -189,7 +189,7 @@ main > h2,
   padding: 13px 5px 17px;
   background: #081322;
   border-top: 1px solid #174D83;
-  z-index: 10;
+  z-index: 99999;
 }
 
 .bottom-nav button {
