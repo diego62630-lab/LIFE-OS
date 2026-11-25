@@ -61,6 +61,7 @@ const pages = {
   tasks: ["Mes tâches", "Votre organisation quotidienne."],
   documents: ["Mes documents", "Vos documents importants."],
   activities: ["Mes activités", "Vos loisirs et sorties."],
+  maison: ["Ma Maison", "Gérez votre maison au quotidien."],
   profile: ["Mon profil", "Vos paramètres personnels."],
   assistant: ["Assistant LIFE OS", "Votre assistant personnel."]
 };
