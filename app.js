@@ -1335,7 +1335,7 @@ function lifeExecuter(commande) {
     );
 
 
-    if ((!dateMot && !dateChiffres) || !heureMatch) {
+    if ((!dateMot && !moisMatch && !dateChiffres) || !heureMatch) {
       lifeDire("Précise le jour et l'heure du rendez-vous.");
       return;
     }
