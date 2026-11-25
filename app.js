@@ -1,4 +1,4 @@
-
+alert("LIFE OS : app.js est chargé !");
 const pageContent = document.getElementById("pageContent");
 // NOTIFICATIONS LIFE OS
 
