@@ -1318,7 +1318,9 @@ function lifeExecuter(commande) {
       localStorage.setItem("lifeCourses", JSON.stringify(courses));
       lifeDire(article.name + " coché comme acheté.");
     }
-
+const heureMatch = commande.match(
+  /\b(?:a\s*)?(\d{1,2})(?::(\d{2})|h(?:\s*(\d{1,2}))?| heures?(?:\s*(\d{1,2}))?)\b/
+);
   // AJOUTER UN RENDEZ-VOUS
   } else if (
     /^(?:ajoute|ajouter|mets|met)\s+(?:un\s+)?(?:rendez-vous|rendez vous|evenement)\b/.test(commande)
