@@ -663,6 +663,27 @@ function showMaison() {
     </section>
   `;
 }
+function ouvrirMaison(rubrique) {
+  if (rubrique === "menage") {
+    pageContent.innerHTML = `
+      <h2>🧹 Ménage et rangement</h2>
+      <p>Organisez les tâches ménagères de votre maison.</p>
+
+      <input id="maisonTache" type="text"
+        placeholder="Exemple : nettoyer la cuisine">
+
+      <button onclick="ajouterTacheMaison()">
+        Ajouter une tâche
+      </button>
+
+      <div id="listeTachesMaison"></div>
+
+      <button onclick="showMaison()">⬅ Retour à Ma Maison</button>
+    `;
+
+    afficherTachesMaison();
+  }
+}
 function   showAgenda() {
   const events = JSON.parse(
     localStorage.getItem("lifeos_events") || "[]"
@@ -756,8 +777,94 @@ document.querySelectorAll(".edit-event").forEach(button => {
     };
   });
 }
+function ajouterTacheMaison() {
+  const champ = document.getElementById("maisonTache");
+  const nom = champ.value.trim();
 
+  if (!nom) {
+    alert("Écris une tâche ménagère.");
+    return;
+  }
 
+  const taches = JSON.parse(
+    localStorage.getItem("lifeos_maison_menage") || "[]"
+  );
+
+  taches.push({
+    id: Date.now(),
+    nom: nom,
+    faite: false
+  });
+
+  localStorage.setItem(
+    "lifeos_maison_menage",
+    JSON.stringify(taches)
+  );
+
+  champ.value = "";
+  afficherTachesMaison();
+}
+function afficherTachesMaison() {
+  const liste = document.getElementById("listeTachesMaison");
+  if (!liste) return;
+
+  const taches = JSON.parse(
+    localStorage.getItem("lifeos_maison_menage") || "[]"
+  );
+
+  if (taches.length === 0) {
+    liste.innerHTML = "<p>Aucune tâche ménagère pour le moment.</p>";
+    return;
+  }
+
+  liste.innerHTML = taches.map(tache => `
+    <div class="task-card ${tache.faite ? "task-done" : ""}">
+      <label>
+        <input type="checkbox"
+          ${tache.faite ? "checked" : ""}
+          onchange="cocherTacheMaison(${tache.id})">
+        ${tache.nom}
+      </label>
+
+      <button onclick="supprimerTacheMaison(${tache.id})">
+        Supprimer
+      </button>
+    </div>
+  `).join("");
+}
+function cocherTacheMaison(id) {
+  const taches = JSON.parse(
+    localStorage.getItem("lifeos_maison_menage") || "[]"
+  );
+
+  const tache = taches.find(t => t.id === id);
+
+  if (tache) {
+    tache.faite = !tache.faite;
+  }
+
+  localStorage.setItem(
+    "lifeos_maison_menage",
+    JSON.stringify(taches)
+  );
+
+  afficherTachesMaison();
+}
+
+function supprimerTacheMaison(id) {
+  const taches = JSON.parse(
+    localStorage.getItem("lifeos_maison_menage") || "[]"
+  );
+
+  const nouvellesTaches = taches.filter(t => t.id !== id);
+
+  localStorage.setItem(
+    "lifeos_maison_menage",
+    JSON.stringify(nouvellesTaches)
+  );
+
+  afficherTachesMaison();
+}
 function showBudget() {
   const operations = JSON.parse(
     localStorage.getItem("lifeos_operations") || "[]"
