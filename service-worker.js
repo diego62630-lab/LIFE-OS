@@ -1,5 +1,4 @@
-
-const CACHE_NAME = "life-os-v1";
+const CACHE_NAME = "life-os-v2";
 
 const FILES_TO_CACHE = [
   "./",
@@ -8,7 +7,8 @@ const FILES_TO_CACHE = [
   "./database.js",
   "./app.js",
   "./voice.js",
-  "./manifest.json"
+  "./manifest.json",
+  "./icon-192.png"
 ];
 
 self.addEventListener("install", event => {
@@ -35,7 +35,6 @@ self.addEventListener("fetch", event => {
   if (event.request.method !== "GET") return;
 
   const url = new URL(event.request.url);
-
   if (url.origin !== self.location.origin) return;
 
   event.respondWith(
