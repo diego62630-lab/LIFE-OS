@@ -602,8 +602,10 @@ function openPage(name) {
   } else if (name === "tasks") {
     showTasks();
   } else if (name === "courses") {
-    showCourses();
-  } else {
+  showCourses();
+} else if (name === "maison") {
+  showMaison();
+} else {
     pageContent.innerHTML = `
       <h2>${pages[name][0]}</h2>
       <p>${pages[name][1]}</p>
@@ -622,7 +624,44 @@ function openPage(name) {
 
   window.scrollTo({ top: 0, behavior: "smooth" });
 }
+function showMaison() {
+  pageContent.innerHTML = `
+    <h2>🏡 Ma Maison</h2>
+    <p>Tout pour organiser et entretenir votre maison.</p>
 
+    <section class="modules">
+      <button class="module" onclick="ouvrirMaison('menage')">
+        <span>🧹</span>
+        <b>Ménage et rangement</b>
+        <small>Organisez votre entretien quotidien</small>
+      </button>
+
+      <button class="module" onclick="ouvrirMaison('entretien')">
+        <span>🔧</span>
+        <b>Entretien des équipements</b>
+        <small>Suivez vos entretiens et rappels</small>
+      </button>
+
+      <button class="module" onclick="ouvrirMaison('planning')">
+        <span>📅</span>
+        <b>Planning hebdomadaire</b>
+        <small>Planifiez votre semaine</small>
+      </button>
+
+      <button class="module" onclick="ouvrirMaison('reparations')">
+        <span>🛠️</span>
+        <b>Réparations et travaux</b>
+        <small>Suivez vos travaux</small>
+      </button>
+
+      <button class="module" onclick="ouvrirMaison('stocks')">
+        <span>📦</span>
+        <b>Stocks de la maison</b>
+        <small>Gérez vos réserves</small>
+      </button>
+    </section>
+  `;
+}
 function   showAgenda() {
   const events = JSON.parse(
     localStorage.getItem("lifeos_events") || "[]"
