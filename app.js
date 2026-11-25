@@ -1271,9 +1271,9 @@ function lifeExecuter(commande) {
     localStorage.setItem("lifeCourses", JSON.stringify(courses));
     lifeDire(nom + " ajouté à ta liste de courses.");
 
-  // SUPPRIMER UN RENDEZ-VOUS
+    // SUPPRIMER UN RENDEZ-VOUS
   } else if (
-    /^(?:supprime|enleve|retire)\s+(?:(?:mon|le|un)\s+)?(?:rendez-vous|rendez vous|evenement)\b/.test(commande)
+    /^(?:supprime|enleve|retire)\s+.*(?:rendez-vous|rendez vous|evenement)\b/.test(commande)
   ) {
     const nomRecherche = commande
       .replace(/^(?:supprime|enleve|retire)\s+(?:(?:mon|le|un)\s+)?(?:rendez-vous|rendez vous|evenement)\s*/, "")
