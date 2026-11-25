@@ -1288,7 +1288,7 @@ function lifeExecuter(commande) {
     addTask(nom, "", "normal");
     lifeDire("J'ai ajouté la tâche : " + nom);
 
-  } 
+ 
   } else if (
     /^(?:termine|terminer|acheve|achever|coche)\s+/.test(commande)
   ) {
