@@ -1288,11 +1288,13 @@ function lifeExecuter(commande) {
     addTask(nom, "", "normal");
     lifeDire("J'ai ajouté la tâche : " + nom);
 
+  } 
   } else if (
-    /^(?:termine|terminer|acheve|achever|coche)\s+(?:(?:ma|la|tache)\s+)?(?:tache\s+)?/.test(commande)
+    /^(?:termine|terminer|acheve|achever|coche)\s+/.test(commande)
   ) {
     const nom = commande
       .replace(/^(?:termine|terminer|acheve|achever|coche)\s+/, "")
+      .replace(/^(?:ma|la|une?)\s+tache\s+/, "")
       .replace(/^tache\s+/, "")
       .trim();
 
@@ -1300,7 +1302,7 @@ function lifeExecuter(commande) {
 
     const tache = tasks.find(task =>
       lifeNormaliser(task.name).trim() ===
-      lifeNormaliser(nom.replace(/^(?:ma|la)\s+tache\s+/, "")).trim()
+      lifeNormaliser(nom).trim()
     );
 
     if (!tache) {
@@ -1308,9 +1310,11 @@ function lifeExecuter(commande) {
     } else {
       tache.done = true;
       saveTasks(tasks);
-      showTasks();
+      openPage("tasks");
       lifeDire("La tâche " + tache.name + " est terminée.");
     }
+
+    
 
   } else if (
     commande.includes("tache") &&
