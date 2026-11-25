@@ -605,6 +605,7 @@ function openPage(name) {
   showCourses();
 } else if (name === "maison") {
   showMaison();
+    alert("La fonction Ma Maison est appelée !");
 } else {
     pageContent.innerHTML = `
       <h2>${pages[name][0]}</h2>
